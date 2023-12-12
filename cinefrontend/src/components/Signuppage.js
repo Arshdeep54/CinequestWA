@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./Navbar";
 import "../cssFiles/Login.css";
 import {
+  Link,
   NavLink,
   Navigate,
   useNavigate,
@@ -76,7 +77,7 @@ function Signuppage() {
         </div>
         <div className="texttosignup">
           <text>Already have an account </text>
-          <NavLink to="/login">Log In</NavLink>
+          <Link to="/login">Log In</Link>
         </div>
       </div>
     </>

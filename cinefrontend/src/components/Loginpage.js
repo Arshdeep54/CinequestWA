@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import "../cssFiles/Login.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 function Loginpage() {
   const navigate = useNavigate();
@@ -72,9 +72,13 @@ function Loginpage() {
             value={"Log in"}
           />
         </div>
+        <div className="textforgot">
+          <text>Forget password? </text>
+          <Link to="/signup">Reset</Link>
+        </div>
         <div className="texttosignup">
           <text>Don't have an account </text>
-          <NavLink to="/signup">Sign Up</NavLink>
+          <Link to="/signup">Sign Up</Link>
         </div>
       </div>
     </>
