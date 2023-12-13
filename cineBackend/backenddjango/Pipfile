@@ -11,6 +11,8 @@ djoser = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
 django-cors-headers = "*"
+django-dotenv = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
