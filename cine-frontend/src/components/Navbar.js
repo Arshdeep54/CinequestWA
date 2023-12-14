@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { CircleUser, Menu, X } from "lucide-react";
-import "../cssFiles/Navbar.css";
+import React, { Component } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { CircleUser, Menu, X } from 'lucide-react';
+import '../cssFiles/Navbar.css';
 export default class Navbar extends Component {
   constructor() {
     super();
@@ -19,37 +19,37 @@ export default class Navbar extends Component {
   render() {
     return (
       <nav>
-        <Link to="/" className="title">
+        <Link to='/' className='title'>
           CineQuest
         </Link>
         <div
-          className={this.state.menuOpen ? "menu open" : "menu close"}
+          className={this.state.menuOpen ? 'menu open' : 'menu close'}
           onClick={this.handleMenuClick}
         >
           {this.state.menuOpen ? <X /> : <Menu />}
         </div>
-        <ul className={this.state.menuOpen ? "open" : "close"}>
+        <ul className={this.state.menuOpen ? 'open' : 'close'}>
           <li>
-            <NavLink to="/about">About</NavLink>
+            <NavLink to='/about'>About</NavLink>
           </li>
           <li>
-            <NavLink to="/services">Services</NavLink>
+            <NavLink to='/services'>Services</NavLink>
           </li>
           <li>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to='/contact'>Contact</NavLink>
           </li>
         </ul>
-        {this.props.loggedIn ? (
+        {localStorage.getItem('access') ? (
           <NavLink
             className={
-              this.state.menuOpen ? "profileIcon open" : "profileIcon close"
+              this.state.menuOpen ? 'profileIcon open' : 'profileIcon close'
             }
-            to="/profile"
+            to='/profile'
           >
-            <CircleUser color="#F4FAFF" />
+            <CircleUser color='#F4FAFF' />
           </NavLink>
         ) : (
-          <NavLink className="login" to="/login">
+          <NavLink className='login' to='/login'>
             log in
           </NavLink>
         )}
