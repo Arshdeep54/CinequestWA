@@ -1,0 +1,63 @@
+.userPofileMain{
+    background-color: #EEEEEE;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.userInfo{
+    margin-top: 50px;
+    width:1000px;
+    height:500px;
+    background-color:white;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+}
+.userInfo .upper{
+    height: 70%;
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: row;
+}
+.userInfo .upper .upperleft{
+    width: 30%;
+    /* border-right: 2px solid red; */
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    
+}
+/* .userInfo .upper .upperleft .profilepic{
+    
+
+} */
+.profilepic { 
+    
+    /* width: 250px;
+    height: 250px;
+    overflow: hidden; 
+    border-radius: 50%;
+    border-color: blue;
+    border-width: 3px;
+    border-style: solid; */
+    box-sizing: border-box;
+    
+}
+.profilepic img { 
+    height: 170px;
+    width: 180px;
+    background-color: #fff;
+    /* border-radius: 1%; */
+    display: inline-block;
+}
+
+.userPrevApp{
+    margin-top: 50px;
+    width:1000px;
+    height:500px;
+    background-color:white;
+    border-radius: 30px;
+}
