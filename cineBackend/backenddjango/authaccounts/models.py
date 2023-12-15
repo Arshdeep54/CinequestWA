@@ -9,13 +9,31 @@ from django.contrib.auth.models import (
 
 
 class UserAccountManager(BaseUserManager):
-    def create_user(self, email, name, password=None, password2=None):
+    def create_user(
+        self,
+        email,
+        name,
+        # first_name,
+        # last_name,
+        # date_of_birth,
+        # mobile,
+        # aboutmovieLife,
+        # gender,
+        password=None,
+        password2=None,
+    ):
         if not email:
             raise ValueError("Users must have an email address")
 
         user = self.model(
             email=self.normalize_email(email),
             name=name,
+            # first_name=first_name,
+            # last_name=last_name,
+            # date_of_birth=date_of_birth,
+            # mobile=mobile,
+            # aboutmovieLife=aboutmovieLife,
+            # gender=gender,
         )
 
         user.set_password(password)
@@ -34,12 +52,22 @@ class UserAccountManager(BaseUserManager):
 
 
 class UserAccount(AbstractBaseUser):
+    MALE = "M"
+    FEMALE = "F"
+    OTHERS = "O"
+    GENDER_CHOICES = [(MALE, "Male"), (FEMALE, "Female"), (OTHERS, "others")]
     email = models.EmailField(
         verbose_name="Email",
         max_length=255,
         unique=True,
     )
     name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, null=True)
+    gender = models.CharField(max_length=255, choices=GENDER_CHOICES, default=OTHERS)
+    date_of_birth = models.DateField(null=True)
+    aboutmovieLife = models.TextField(null=True)
+    mobile = models.BigIntegerField(null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

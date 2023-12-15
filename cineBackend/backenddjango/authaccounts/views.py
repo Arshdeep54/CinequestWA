@@ -3,10 +3,12 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import UpdateAPIView
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
     UserProfileSerializer,
+    UserUpdateProfileSerializer,
     UserChangePassSerializer,
     SendPasswordResetEmailSerializer,
     UserResetPasswordSerializer,
@@ -78,6 +80,30 @@ class UserProfileView(APIView):
         # if serializer.is_valid():
         return Response(serializer.data, status=status.HTTP_200_OK)
         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserUpdateProfileView(UpdateAPIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        serializer = UserUpdateProfileSerializer(
+            data=request.data, context={"user": request.user}
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"msg": "password changed successfully", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+#         product = get_object_or_404(Product, pk=id)
+#         serializer = ProductSerializer(product, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
 
 
 class UserChangePasswordView(APIView):

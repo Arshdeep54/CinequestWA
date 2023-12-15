@@ -9,18 +9,19 @@
 .userInfo{
     margin-top: 50px;
     width:1000px;
-    height:500px;
+    height:465px;
     background-color:white;
     border-radius: 30px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 .userInfo .upper{
-    height: 70%;
+    height: 100%;
+    width: 100%;
     /* background-color: aqua; */
     display: flex;
     flex-direction: row;
-}
+} 
 .userInfo .upper .upperleft{
     width: 30%;
     /* border-right: 2px solid red; */
@@ -35,7 +36,7 @@
 
 } */
 .profilepic { 
-    
+    /* background-color: #f86969; */
     /* width: 250px;
     height: 250px;
     overflow: hidden; 
@@ -49,11 +50,78 @@
 .profilepic img { 
     height: 170px;
     width: 180px;
-    background-color: #fff;
-    /* border-radius: 1%; */
+    /* background-color: #f86969; */
+    border-radius: 50%;
     display: inline-block;
 }
+.userInfo .upper .upperright{
+    width:70%;
+    margin-top: 20px;
+    /* padding-left: 30px; */
+}
+.labeltext{
+    font-size: 18px;
+    font-weight: 650;
 
+
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 42%;
+}
+.inputboxUser{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.AboutUsermovie{
+    width: 90%;
+    /* height:170px */
+}
+.textbox{
+    width: 100%;
+    resize: none;
+    height: 135px;
+    border: 1px solid #ccc;
+    padding: 2px;
+    
+}
+.textPersonalInfo{
+    font-weight: 500;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+.inforow{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    margin-bottom: 15px;
+    justify-content: space-between;
+}
+.Savediv{
+    width: 1000px;
+    display: flex;
+    /* align-items: flex-end; */
+    justify-content: end;
+    padding-right: 37px;
+    margin-top: 10px;
+}
+.savebtn{
+    border: none;
+    background: cornflowerblue;
+    color: white;
+    padding: 7px 14px;
+    margin: 7px;
+    font-size: 23px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.savebtn:hover{
+    background-color:rgb(76, 127, 222) ;
+}
 .userPrevApp{
     margin-top: 50px;
     width:1000px;

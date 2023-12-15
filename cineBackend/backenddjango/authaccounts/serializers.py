@@ -24,7 +24,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        return UserAccount.objects.create_user(**validated_data)
+        return UserAccount.objects.create_user(
+            **validated_data,
+            # first_name=None,
+            # last_name=None,
+            # date_of_birth=None,
+            # gender="O",
+            # mobile=None,
+            # aboutmovieLife=None
+        )
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -38,7 +46,33 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount
-        fields = ["id", "email", "name"]
+        fields = [
+            "id",
+            "email",
+            "name",
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "gender",
+            "mobile",
+            "aboutmovieLife",
+        ]
+
+
+class UserUpdateProfileSerializer(serializers.Serializer):
+    class Meta:
+        model = UserAccount
+        fields = [
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "gender",
+            "mobile",
+            "aboutmovieLife",
+        ]
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class UserChangePassSerializer(serializers.Serializer):
