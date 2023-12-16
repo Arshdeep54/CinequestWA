@@ -44,12 +44,12 @@ export default class Navbar extends Component {
             className={
               this.state.menuOpen ? 'profileIcon open' : 'profileIcon close'
             }
-            to='/profile'
+            to='/auth/profile'
           >
             <CircleUser color='#F4FAFF' />
           </NavLink>
         ) : (
-          <NavLink className='login' to='/login'>
+          <NavLink className='login' to='/auth/login'>
             log in
           </NavLink>
         )}

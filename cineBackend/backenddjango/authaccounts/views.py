@@ -3,7 +3,11 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import (
+    UpdateAPIView,
+    RetrieveUpdateAPIView,
+    RetrieveAPIView,
+)
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
@@ -71,32 +75,40 @@ class UserLoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserProfileView(APIView):
-    renderer_classes = [UserRenderer]
+class UserProfileView(RetrieveUpdateAPIView):
+    # renderer_classes = [UserRenderer]
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        serializer = UserProfileSerializer(request.user)
-        # if serializer.is_valid():
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_object(self):
+        return self.request.user
+
+    # def get(self, request, format=None):
+    #     serializer = UserProfileSerializer(request.user)
+    #     # if serializer.is_valid():
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    #     # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserUpdateProfileView(UpdateAPIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
+# class UserUpdateProfileView(UpdateAPIView):
+#     # renderer_classes = [UserRenderer]
+#     serializer_class = UserUpdateProfileSerializer
+#     permission_classes = [IsAuthenticated]
 
-    def put(self, request):
-        serializer = UserUpdateProfileSerializer(
-            data=request.data, context={"user": request.user}
-        )
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(
-                {"msg": "password changed successfully", "data": serializer.data},
-                status=status.HTTP_200_OK,
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def get_object(self):
+#         return self.request.user
+
+#     # def patch(self, request):
+#     #     serializer = UserUpdateProfileSerializer(
+#     #         data=request.data, context={"user": request.user}
+#     #     )
+#     #     if serializer.is_valid(raise_exception=True):
+#     #         serializer.save()
+#     #         return Response(
+#     #             {"msg": "password changed successfully", "data": serializer.data},
+#     #             status=status.HTTP_200_OK,
+#     #         )
+#     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 #         product = get_object_or_404(Product, pk=id)

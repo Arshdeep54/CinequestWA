@@ -47,7 +47,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount
         fields = [
-            "id",
             "email",
             "name",
             "first_name",
@@ -60,6 +59,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateProfileSerializer(serializers.Serializer):
+    # first_name = serializers.CharField(max_length=255)
+    # last_name = serializers.CharField(max_length=255)
+    # gender = serializers.CharField(max_length=255)
+    # date_of_birth = serializers.DateField()
+    # aboutmovieLife = serializers.CharField()
+    # mobile = serializers.IntegerField()
+
     class Meta:
         model = UserAccount
         fields = [
@@ -72,7 +78,37 @@ class UserUpdateProfileSerializer(serializers.Serializer):
         ]
 
     def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+        # Update and return the instance with the validated data
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.date_of_birth = validated_data.get(
+            "date_of_birth", instance.date_of_birth
+        )
+        instance.gender = validated_data.get("gender", instance.gender)
+        instance.mobile = validated_data.get("mobile", instance.mobile)
+        instance.aboutmovieLife = validated_data.get(
+            "aboutmovieLife", instance.aboutmovieLife
+        )
+        instance.save()
+        return instance
+
+    # def validate(self, attrs):
+    #     first_name = attrs.get("first_name")
+    #     last_name = attrs.get("last_name")
+    #     date_of_birth = attrs.get("date_of_birth")
+    #     gender = attrs.get("gender")
+    #     mobile = attrs.get("mobile")
+    #     aboutmovieLife = attrs.get("aboutmovieLife")
+    #     user = self.context.get("user")
+    #     if user:
+    #         user.first_name = first_name
+    #         user.last_name = last_name
+    #         user.date_of_birth = date_of_birth
+    #         user.gender = gender
+    #         user.mobile = mobile
+    #         user.aboutmovieLife = aboutmovieLife
+    #         user.save()
+    #     return attrs
 
 
 class UserChangePassSerializer(serializers.Serializer):
@@ -111,7 +147,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
             user = UserAccount.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-            link = "http://localhost:3000/auth/user/reset" + uid + "/" + token
+            link = "http://localhost:3000/auth/reset/" + uid + "/" + token
             print(link)
             email_data = {
                 "email_subject": "Password Reset Auto Generated Mail",

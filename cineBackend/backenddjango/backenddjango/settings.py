@@ -201,6 +201,7 @@ SIMPLE_JWT = {
 PASSWORD_RESET_TIMEOUT = 600  # 10 minutes
 
 CORS_ALLOWED_ORIGINS = [
+    "https://arshdeep54.github.io",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]

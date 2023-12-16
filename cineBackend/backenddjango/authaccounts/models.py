@@ -64,7 +64,9 @@ class UserAccount(AbstractBaseUser):
     name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    gender = models.CharField(max_length=255, choices=GENDER_CHOICES, default=OTHERS)
+    gender = models.CharField(
+        max_length=255, choices=GENDER_CHOICES, default=OTHERS, null=True
+    )
     date_of_birth = models.DateField(null=True)
     aboutmovieLife = models.TextField(null=True)
     mobile = models.BigIntegerField(null=True)

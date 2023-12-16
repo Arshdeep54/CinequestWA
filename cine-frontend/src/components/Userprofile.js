@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
-import { LogOut } from 'lucide-react';
+// import { LogOut } from 'lucide-react';
+import axios from 'axios';
 import '../cssFiles/UserProfile.css';
+import { Navigate, useNavigate } from 'react-router-dom';
 // import Userinfo from './Userinfo';
 function Userprofile() {
+  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState({
     firstName: '',
     LastName: '',
@@ -13,37 +16,66 @@ function Userprofile() {
     mobile: '',
     aboutmovielife: '',
   });
-  // const [firstName, setFirstName] = useState('');
-  // const [lastName, setLastName] = useState('');
-  // const [dob, setDob] = useState('');
-  // const [gender, setGender] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [mobile, setmobile] = useState('');
-  // const [aboutmovielife, setAboutmovielife] = useState('');
-  const logout = () => {
-    localStorage.clear();
-    // navigate('/login')
-  };
-  var today = new Date(),
-    date =
-      today.getFullYear() +
-      '-' +
-      (today.getMonth() + 1) +
-      '-' +
-      today.getDate();
-  const handleSave = () => {
-    console.log('Saved');
-  };
-  // const changeValue = (value) => {
-  //   setFirstName(value);
-  // };
-  const handleinputChange = (nvalue) => {
-    const updatedUserProfile = {
-      ...userProfile,
-      firstName: nvalue,
+  const getuserData = async () => {
+    const token = localStorage.getItem('access');
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `JWT ${token}`,
+      },
     };
-    setUserProfile(updatedUserProfile);
+    const url = 'http://127.0.0.1:8000/auth/user/me/';
+    const response = await axios.get(url, config);
+    console.log(response.data.first_name);
+    const userprofile = {
+      firstName: response.data.first_name,
+      LastName: response.data.last_name,
+      dob: response.data.date_of_birth,
+      gender: response.data.gender,
+      mobile: response.data.mobile,
+      aboutmovielife: response.data.aboutmovieLife,
+      email: response.data.email,
+    };
+    console.log(userprofile);
+    setUserProfile({ ...userprofile });
   };
+  useEffect(() => {
+    getuserData();
+  }, [1000]);
+
+  var today = new Date();
+  var date =
+    today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const handleSave = async () => {
+    const token = localStorage.getItem('access');
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `JWT ${token}`,
+      },
+    };
+    const body = {
+      first_name: userProfile.firstName,
+      last_name: userProfile.LastName,
+      date_of_birth: userProfile.dob,
+      gender: userProfile.gender,
+      mobile: userProfile.mobile,
+      aboutmovieLife: userProfile.aboutmovielife,
+    };
+    const url = 'http://127.0.0.1:8000/auth/user/me/';
+    const response = await axios.patch(url, body, config);
+    if (response) {
+      getuserData();
+    }
+  };
+  const Logout = () => {
+    localStorage.clear();
+    navigate('/');
+  };
+  const changePassword = () => {
+    navigate('/auth/changepassword');
+  };
+
   // const Userinfo = ({ label, value, readonly }) => {
   //   return (
   //     <>
@@ -116,12 +148,7 @@ function Userprofile() {
                         firstName: e.target.value,
                       });
                     }}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                    }}
+                    className='inputboxUser'
                   />
                 </div>
                 <div className='form-group'>
@@ -150,7 +177,7 @@ function Userprofile() {
                   <input
                     name='inputInfo'
                     type='text'
-                    value={userProfile.dob.length > 0 ? userProfile.dob : date}
+                    value={userProfile.dob != null ? userProfile.dob : date}
                     onChange={(e) => {
                       setUserProfile({
                         ...userProfile,
@@ -187,12 +214,7 @@ function Userprofile() {
                     name='inputInfo'
                     type='text'
                     value={userProfile.email}
-                    onChange={(e) => {
-                      setUserProfile({
-                        ...userProfile,
-                        email: e.target.value,
-                      });
-                    }}
+                    readOnly
                     className='inputboxUser'
                   />
                 </div>
@@ -234,6 +256,12 @@ function Userprofile() {
         <div className='Savediv'>
           <button className='savebtn' onClick={handleSave}>
             Save
+          </button>
+          <button className='savebtn' onClick={Logout}>
+            Log out
+          </button>
+          <button className='savebtn' onClick={changePassword}>
+            Change password
           </button>
         </div>
         <div className='userPrevApp'></div>
