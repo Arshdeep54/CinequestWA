@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from .models import Movie
+from .models import Movie, Review
 
 
 # class LanguageSerializer(serializers.ModelSerializer):
@@ -20,4 +20,13 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
+        fields = "__all__"
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source="user.name")
+    movie = serializers.ReadOnlyField(source="movie.id")
+
+    class Meta:
+        model = Review
         fields = "__all__"

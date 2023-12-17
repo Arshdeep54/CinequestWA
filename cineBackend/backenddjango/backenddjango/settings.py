@@ -151,24 +151,11 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
 }
-# DJOSER = {
-#     "LOGIN_FIELD": "email",
-#     "USER_CREATE_PASSWORD_RETYPE": True,
-#     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
-#     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
-#     "SEND_CONFIRMATION_EMAIL": True,
-#     "SET_USERNAME_RETYPE": True,
-#     "SET_PASSWORD_RETYPE": True,
-#     "PASSWORD_RESET_CONFIRM_URL": "password/reset/cofirm/{uid}/{token}",
-#     "USERNAME_RESET_CONFIRM_URL": "email/reset/cofirm/{uid}/{token}",
-#     "ACTIVATION_URL": "acctivate/{uid}/{token}",
-#     "SEND_ACTIVATION_EMAIL": True,
-#     "serializers": {},
-# }
+
 AUTH_USER_MODEL = "authaccounts.UserAccount"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=3),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,

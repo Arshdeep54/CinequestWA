@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import axios from 'axios';
 import '../cssFiles/UserProfile.css';
 import { Navigate, useNavigate } from 'react-router-dom';
+import UserReviews from './UserReviews';
 // import Userinfo from './Userinfo';
 function Userprofile() {
   const navigate = useNavigate();
@@ -123,150 +124,166 @@ function Userprofile() {
   return (
     <>
       <Navbar />
-      <div className='userPofileMain'>
-        <div className='userInfo'>
-          <div className='upper'>
-            <div className='upperleft'>
-              <div className='profilepic'>
-                <img src='https://reactjs.org/logo-og.png' alt='React Image' />
+      <div className='MainPage'>
+        <div className='leftLinksSection'>
+          <div className='contenttext'>Contents</div>
+          <br />
+          <a href='#profile'>User Profile</a>
+          <a href='#reviews'>Your Reviews</a>
+          <a href='#favourites'>Favourite Movies </a>
+          <a href='#accSettings'>Account Settings</a>
+        </div>
+        <div className='rightMain'>
+          <div className='userInfo' id='profile'>
+            <div className='textPersonalInfo'>Personal Info</div>
+            <div className='upper'>
+              <div className='upperleft'>
+                <div className='profilepic'>
+                  <img
+                    src='https://reactjs.org/logo-og.png'
+                    alt='React Image'
+                  />
+                </div>
+              </div>
+              <div className='upperright'>
+                {/* <div className='textPersonalInfo'>Personal Info</div> */}
+                <div className='inforow'>
+                  <div className='form-group'>
+                    <label style={{ fontWeight: '700', color: '#000' }}>
+                      First Name
+                    </label>
+                    <input
+                      name='inputInfo'
+                      type='text'
+                      value={userProfile.firstName}
+                      onChange={(e) => {
+                        setUserProfile({
+                          ...userProfile,
+                          firstName: e.target.value,
+                        });
+                      }}
+                      className='inputboxUser'
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <label style={{ fontWeight: '700', color: '#000' }}>
+                      Last Name
+                    </label>
+                    <input
+                      name='inputInfo'
+                      type='text'
+                      value={userProfile.LastName}
+                      className='inputboxUser'
+                      onChange={(e) => {
+                        setUserProfile({
+                          ...userProfile,
+                          LastName: e.target.value,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className='inforow'>
+                  <div className='form-group'>
+                    <label style={{ fontWeight: '700', color: '#000' }}>
+                      Date of birth
+                    </label>
+                    <input
+                      name='inputInfo'
+                      type='text'
+                      value={userProfile.dob != null ? userProfile.dob : date}
+                      onChange={(e) => {
+                        setUserProfile({
+                          ...userProfile,
+                          dob: e.target.value,
+                        });
+                      }}
+                      className='inputboxUser'
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <label style={{ fontWeight: '700', color: '#000' }}>
+                      Gender
+                    </label>
+                    <input
+                      name='inputInfo'
+                      type='text'
+                      value={userProfile.gender}
+                      onChange={(e) => {
+                        setUserProfile({
+                          ...userProfile,
+                          gender: e.target.value,
+                        });
+                      }}
+                      className='inputboxUser'
+                    />
+                  </div>
+                </div>
+                <div className='inforow'>
+                  <div className='form-group'>
+                    <label style={{ fontWeight: '700', color: '#000' }}>
+                      Email
+                    </label>
+                    <input
+                      name='inputInfo'
+                      type='text'
+                      value={userProfile.email}
+                      readOnly
+                      className='inputboxUser'
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <label style={{ fontWeight: '700', color: '#000' }}>
+                      Mobile
+                    </label>
+                    <input
+                      name='inputInfo'
+                      type='text'
+                      value={userProfile.mobile}
+                      onChange={(e) => {
+                        setUserProfile({
+                          ...userProfile,
+                          mobile: e.target.value,
+                        });
+                      }}
+                      className='inputboxUser'
+                    />
+                  </div>
+                </div>
+                <div className='AboutUsermovie'>
+                  <div className='labeltext'>Tell About your Movie Life</div>
+                  <textarea
+                    className='textbox'
+                    value={userProfile.aboutmovielife}
+                    onChange={(e) => {
+                      setUserProfile({
+                        ...userProfile,
+                        aboutmovielife: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
               </div>
             </div>
-            <div className='upperright'>
-              <div className='textPersonalInfo'>Personal Info</div>
-              <div className='inforow'>
-                <div className='form-group'>
-                  <label style={{ fontWeight: '700', color: '#000' }}>
-                    First Name
-                  </label>
-                  <input
-                    name='inputInfo'
-                    type='text'
-                    value={userProfile.firstName}
-                    onChange={(e) => {
-                      setUserProfile({
-                        ...userProfile,
-                        firstName: e.target.value,
-                      });
-                    }}
-                    className='inputboxUser'
-                  />
-                </div>
-                <div className='form-group'>
-                  <label style={{ fontWeight: '700', color: '#000' }}>
-                    Last Name
-                  </label>
-                  <input
-                    name='inputInfo'
-                    type='text'
-                    value={userProfile.LastName}
-                    className='inputboxUser'
-                    onChange={(e) => {
-                      setUserProfile({
-                        ...userProfile,
-                        LastName: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-              <div className='inforow'>
-                <div className='form-group'>
-                  <label style={{ fontWeight: '700', color: '#000' }}>
-                    Date of birth
-                  </label>
-                  <input
-                    name='inputInfo'
-                    type='text'
-                    value={userProfile.dob != null ? userProfile.dob : date}
-                    onChange={(e) => {
-                      setUserProfile({
-                        ...userProfile,
-                        dob: e.target.value,
-                      });
-                    }}
-                    className='inputboxUser'
-                  />
-                </div>
-                <div className='form-group'>
-                  <label style={{ fontWeight: '700', color: '#000' }}>
-                    Gender
-                  </label>
-                  <input
-                    name='inputInfo'
-                    type='text'
-                    value={userProfile.gender}
-                    onChange={(e) => {
-                      setUserProfile({
-                        ...userProfile,
-                        gender: e.target.value,
-                      });
-                    }}
-                    className='inputboxUser'
-                  />
-                </div>
-              </div>
-              <div className='inforow'>
-                <div className='form-group'>
-                  <label style={{ fontWeight: '700', color: '#000' }}>
-                    Email
-                  </label>
-                  <input
-                    name='inputInfo'
-                    type='text'
-                    value={userProfile.email}
-                    readOnly
-                    className='inputboxUser'
-                  />
-                </div>
-                <div className='form-group'>
-                  <label style={{ fontWeight: '700', color: '#000' }}>
-                    Mobile
-                  </label>
-                  <input
-                    name='inputInfo'
-                    type='text'
-                    value={userProfile.mobile}
-                    onChange={(e) => {
-                      setUserProfile({
-                        ...userProfile,
-                        mobile: e.target.value,
-                      });
-                    }}
-                    className='inputboxUser'
-                  />
-                </div>
-              </div>
-              <div className='AboutUsermovie'>
-                <div className='labeltext'>Tell About your Movie Life</div>
-                <textarea
-                  className='textbox'
-                  value={userProfile.aboutmovielife}
-                  onChange={(e) => {
-                    setUserProfile({
-                      ...userProfile,
-                      aboutmovielife: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-            </div>
+            {/* <div className='lower'></div> */}
           </div>
-          {/* <div className='lower'></div> */}
+          <div className='Savediv'>
+            <button className='savebtn' onClick={handleSave}>
+              Save
+            </button>
+            <button className='savebtn' onClick={Logout}>
+              Log out
+            </button>
+            <button className='savebtn' onClick={changePassword}>
+              Change password
+            </button>
+          </div>
+          <UserReviews />
+          <div className='userFavMovies' id='favourites'></div>
+          <div className='userAccinfo' id='accSettings'></div>
         </div>
-        <div className='Savediv'>
-          <button className='savebtn' onClick={handleSave}>
-            Save
-          </button>
-          <button className='savebtn' onClick={Logout}>
-            Log out
-          </button>
-          <button className='savebtn' onClick={changePassword}>
-            Change password
-          </button>
-        </div>
-        <div className='userPrevApp'></div>
-        <div className='userAccinfo'></div>
       </div>
+      <footer>this is footer here </footer>
     </>
   );
 }

@@ -1,19 +1,55 @@
-.userPofileMain{
+.MainPage{
+    display: flex;
+    flex-direction: row;
+    background-color: #EEEEEE;
+}
+.leftLinksSection{
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    position: sticky;
+    top: 0;
+    /* background-color: white; */
+    left: 0;
+    height: 100vh;
+    bottom: 0;
+    padding-top: 30px;
+    padding-left: 3.25rem;
+}
+.contenttext{
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #eaecf0;
+    line-height: 1.6;
+    font-size: 0.985rem;
+    font-weight: 550;
+    color: #000000;
+    font-family: sans-serif;
+}
+.leftLinksSection a{
+    color: #3366cc;
+    text-decoration: none;
+    font-size: 0.875rem;
+    background: none;
+    padding: 6px 0;
+}
+.rightMain{
     background-color: #EEEEEE;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
 
 }
 .userInfo{
     margin-top: 50px;
     width:1000px;
-    height:465px;
+    height:490px;
     background-color:white;
-    border-radius: 30px;
+    border-radius: 10px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column; 
 }
 .userInfo .upper{
     height: 100%;
@@ -99,8 +135,11 @@
 }
 .textPersonalInfo{
     font-weight: 500;
-    font-size: 22px;
-    margin-bottom: 10px;
+    font-size: 26px;
+  
+    padding-left: 45px;
+    padding-top: 10px;
+    border-bottom: 1px solid #d6d8dc;
 }
 .inforow{
     display: flex;
@@ -130,7 +169,50 @@
 .savebtn:hover{
     background-color:rgb(76, 127, 222) ;
 }
-.userPrevApp{
+.userReviews{
+    margin-top: 50px;
+    width:1000px;
+    height:500px;
+    background-color:white;
+    border-radius: 10px;
+
+}
+.userreview {
+    /* height: 173px; */
+    height: fit-content;
+    min-height: 184px;
+    padding: 10px;
+    background-color: aquamarine;
+    display: flex;
+}
+.leftsec {
+    width: fit-content;
+    min-width: 200px;
+   
+    padding: 2px;
+}
+.reviewImg {
+    /* height: 153px; */
+    /* width: auto; */
+    /* border: 1px #a53b3b; */
+    min-width: 197px;
+    min-height: 170px;
+    height: fit-content;
+    width: fit-content;
+}
+.movieName {
+    /* border-top: black 2px; */
+    /* border: 2px solid; */
+    text-align: center;
+}
+.userFavMovies{
+    margin-top: 50px;
+    width:1000px;
+    height:500px;
+    background-color:white;
+    border-radius: 30px;
+}
+.userAccinfo{
     margin-top: 50px;
     width:1000px;
     height:500px;
