@@ -271,6 +271,10 @@ function Userprofile() {
             <button className='savebtn' onClick={handleSave}>
               Save
             </button>
+          </div>
+          <UserReviews />
+          <div className='userFavMovies' id='favourites'></div>
+          <div className='userAccinfo' id='accSettings'>
             <button className='savebtn' onClick={Logout}>
               Log out
             </button>
@@ -278,9 +282,6 @@ function Userprofile() {
               Change password
             </button>
           </div>
-          <UserReviews />
-          <div className='userFavMovies' id='favourites'></div>
-          <div className='userAccinfo' id='accSettings'></div>
         </div>
       </div>
       <footer>this is footer here </footer>

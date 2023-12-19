@@ -85,7 +85,7 @@ function ChangePassword() {
         </div>
         <div className='textforgot'>
           <text>Cancel </text>
-          <Link to={uid && sent_token ? '/auth/login' : '/profile'}>
+          <Link to={uid && sent_token ? '/auth/login' : '/auth/profile'}>
             Go Back
           </Link>
         </div>

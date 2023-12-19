@@ -172,17 +172,46 @@
 .userReviews{
     margin-top: 50px;
     width:1000px;
-    height:500px;
+    min-height:500px;
+    height: fit-content;
     background-color:white;
     border-radius: 10px;
 
 }
+.reviewContainer {
+    margin: 5px;
+}
+.rightTop {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 0.001rem solid;
+    padding: 4px
+}
+.rightsec {
+    width: 100%;
+}
+.textHead {
+    font-size: 19px;
+    /* font-size: large; */
+    font-weight: 600;
+}
+.dateReview {
+    font-size: 13px;
+}
+.rightIcons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 72px;
+}
 .userreview {
     /* height: 173px; */
+    height: -moz-fit-content;
     height: fit-content;
     min-height: 184px;
+    border-radius: 9px;
     padding: 10px;
-    background-color: aquamarine;
+    background-color: #f7f7f7;
     display: flex;
 }
 .leftsec {
@@ -198,7 +227,15 @@
     min-width: 197px;
     min-height: 170px;
     height: fit-content;
+    border-right: 1px solid;
     width: fit-content;
+    display: flex;
+    justify-content: center;
+}
+.reviewImg img{
+
+    object-fit: cover;
+    width: 153px;
 }
 .movieName {
     /* border-top: black 2px; */
