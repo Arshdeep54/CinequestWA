@@ -1,0 +1,148 @@
+.searchCont {
+    display: flex;
+    justify-content: center;
+    height: 75px;
+    align-items: center;
+}
+.searchBox {
+    display: flex;
+    height: 40px;
+    width: 50%;
+    border: 1px solid;
+    border-radius: 5px;
+    justify-content: space-between;
+    align-items: center;
+}
+.searchInput{
+    width: 90%;
+    border: none;
+    outline: none;
+    height: 80%;
+    margin-left: 16px;
+}
+.searchIcons {
+    margin-right: 5px;
+}
+.filersCont {
+    height: 60px;
+    border-bottom: 1px solid;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid;
+    align-items: center;
+}
+.switchCont {
+    margin-right: 30px;
+}
+select.selectF {
+    width: 128px;
+    height: 30px;
+    margin: 0 12px;
+    font-size: 16px;
+    border: 1.3px solid;
+    border-radius: 5px;
+}
+.filtertext {
+    font-size: 22px;
+    margin-right: 7px;
+}
+.switch-handle {
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .moviesSection {
+    margin-top: 15px;
+    padding: 0 12px;
+}.horCont {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.movieCard {
+    width: 300px;
+    margin:4px;
+    height: 300px;
+    padding: 5px;
+    perspective: 1000px;
+    /* transition: transform 0.3s; */
+}
+.cardFront,.cardBack{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+  transform-origin: center;
+}
+.cardFront {
+    background-color: #3498db;
+    color: #fff;
+  }
+  .selectlabel {
+    font-family: inherit;
+}
+  .cardBack {
+   
+    
+    background-color: #4e2a27;
+    color: #fff;
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    padding-top: 5px;
+    padding-left: 4px;
+    justify-content: start;
+    align-items: start;
+  }
+.movieCard:hover .cardFront {
+    transform: rotateY(180deg) ; 
+  }
+  
+  .movieCard:hover .cardBack {
+    transform: rotateY(0deg) ; 
+  }
+/* .movieCard:hover{
+    /* transform: scale(1.1); */
+/* } */ 
+.headText {
+    font-size: 26px;
+    font-weight: 600;
+    padding-left: 7px;
+}
+span.nbtn {
+  
+    cursor: pointer;
+}
+span.pbtn {
+   
+    cursor: pointer;
+}
+
+img.img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+.imagecont {
+    width: 100%;
+    height: 100%;
+}
+  .switch-inner {
+    display: flex;
+    justify-content: space-between;
+    width: 60px;
+  }
+  
+  .switch-handle.on {
+    background-color: #4caf50; /* Green color when switch is on */
+    border-color: #4caf50;
+  }

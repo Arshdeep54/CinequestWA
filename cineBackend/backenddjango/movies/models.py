@@ -23,8 +23,9 @@ class Movie(models.Model):
     description = models.CharField(max_length=255)
     poster_link = models.TextField()
     language = models.CharField(max_length=255, default="Hindi")
-    rating = models.DecimalField(max_digits=2, decimal_places=2)
+    rating = models.DecimalField(max_digits=2, decimal_places=1)
     platform = models.CharField(max_length=255, default="Youtube")
+    genre = models.CharField(max_length=255, default="comedy")
     release_date = models.DateField()
 
 
