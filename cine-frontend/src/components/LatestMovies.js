@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import MovieCard from './MovieCard';
 import axios from 'axios';
-import { ChevronLeftSquare, ChevronRightSquare } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronLeftCircle,
+  ChevronLeftSquare,
+  ChevronRight,
+  ChevronRightSquare,
+} from 'lucide-react';
 const LatestMovies = ({ orderBy }) => {
   const [latestMovies, setLatestMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 6;
-
+  const [ifhoveredp, setIfHoveredp] = useState(false);
+  const [ifhoveredn, setIfHoveredn] = useState(false);
   const startIndex = (currentPage - 1) * moviesPerPage;
   const endIndex = startIndex + moviesPerPage;
   const currentMovies = latestMovies.slice(startIndex, endIndex);
@@ -36,7 +43,12 @@ const LatestMovies = ({ orderBy }) => {
         <div className='horCont'>
           {currentPage > 1 && (
             <span className='pbtn' onClick={handlePrevPage}>
-              <ChevronLeftSquare />
+              <ChevronLeft
+                color={!ifhoveredp ? '#9aa0a6' : 'white'}
+                size={'32px'}
+                onMouseEnter={() => setIfHoveredp(!ifhoveredp)}
+                onMouseLeave={() => setIfHoveredp(!ifhoveredp)}
+              />
             </span>
           )}
           {currentMovies.map((movie) => {
@@ -44,7 +56,12 @@ const LatestMovies = ({ orderBy }) => {
           })}
           {latestMovies.length > endIndex && (
             <span className='nbtn' onClick={handleNextPage}>
-              <ChevronRightSquare />
+              <ChevronRight
+                color={!ifhoveredn ? '#9aa0a6' : 'white'}
+                size={'32px'}
+                onMouseEnter={() => setIfHoveredn(!ifhoveredn)}
+                onMouseLeave={() => setIfHoveredn(!ifhoveredn)}
+              />
             </span>
           )}
         </div>

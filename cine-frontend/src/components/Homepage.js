@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import { Search, X } from 'lucide-react';
 import Switch from 'react-switch';
 import '../cssFiles/HomePage.css';
 import MoviePageWithoutFilters from './MoviePageWithoutFilters';
+import Footer from './Footer';
+import AllMovies from './AllMovies';
+import axios from 'axios';
+import LatestMovies from './LatestMovies';
+import MovieCard from './MovieCard';
 function Homepage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [filtersActive, setFiltersActive] = useState(false);
@@ -12,6 +17,18 @@ function Homepage() {
   const [ReleasedINFilter, setReleasedINFilter] = useState('Release Year');
   const [genreFilter, setGenreFilter] = useState('Genre');
   const [platformFilter, setPlatformFilter] = useState('Platform');
+  const [MoviesWithFilters, setMoviesWithFilters] = useState([]);
+  const getSearchedMovie = async () => {
+    const url = `http://127.0.0.1:8000/moviesapi/movies/?search=${searchFilter}`;
+    const response = await axios.get(url);
+    console.log(response.data);
+    setMoviesWithFilters([...response.data]);
+    console.log(MoviesWithFilters);
+  };
+  useEffect(() => {
+    getSearchedMovie();
+  }, [searchFilter]);
+
   return (
     <>
       <Navbar loggedIn={loggedIn} />
@@ -126,11 +143,14 @@ function Homepage() {
             <MoviePageWithoutFilters />
           ) : (
             <>
-              <div>Searched movies here</div>
+              {MoviesWithFilters.map((movie) => {
+                return <MovieCard movie={movie} />;
+              })}
             </>
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 }
