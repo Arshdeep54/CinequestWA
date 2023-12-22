@@ -87,9 +87,7 @@ function UserReviews() {
     // console.log(descModel);
     const movie_id = review.movie;
     // console.log(movie_id);
-    const movie = movies.filter((movie) => {
-      return movie.id == movie_id;
-    });
+    const movie = movies.find((movie) => movie.id === movie_id);
     // console.log(movie);
     return (
       <>
@@ -128,15 +126,17 @@ function UserReviews() {
             <div>Edit Your Review </div>
             <div className='leftsecM'>
               <div className='reviewImgM'>
-                {/* <img
+                <img
                   src={
-                    // movie[0].poster_link == null
-                    // 'https://reactjs.org/logo-og.png'
-                    //   :
-                    movie[0].poster_link
-                  } */}
+                    movie
+                      ? movie.poster_link
+                      : 'https://reactjs.org/logo-og.png'
+                  }
+                />
               </div>
-              {/* <div className='movieNameM'>{movie[0].title}</div> */}
+              <div className='movieNameM'>
+                {movie ? movie.title : 'Movie Title'}
+              </div>
             </div>
             <div className='rightsecM'>
               <div className='rightTopM'>
@@ -219,13 +219,11 @@ function UserReviews() {
         <div className='textPersonalInfo'>Your Reviews</div>
         {/* <div className='reviewContainer'>{rendered ? RenderReviews : ' '}</div> */}
         <div className='reviewContainer'>
-          {rendered &&
+          {rendered ? (
             userReviews.map((review) => {
               const movie_id = review.movie;
-              const movie = movies.filter((movie) => {
-                return movie.id == movie_id;
-              });
-              console.log(movie[0].poster_link || 'ok');
+              const movie = movies.find((movie) => movie.id === movie_id);
+
               return (
                 <>
                   <div className='userreview'>
@@ -233,14 +231,16 @@ function UserReviews() {
                       <div className='reviewImg'>
                         <img
                           src={
-                            // movie[0].poster_link == null
-                            // 'https://reactjs.org/logo-og.png'
-                            //   :
-                            movie[0].poster_link
+                            movie
+                              ? movie.poster_link
+                              : 'https://reactjs.org/logo-og.png'
                           }
+                          alt={movie ? movie.title : 'Movie Poster'}
                         />
                       </div>
-                      <div className='movieName'>{movie[0].title}</div>
+                      <div className='movieName'>
+                        {movie ? movie.title : 'Movie Title'}
+                      </div>
                     </div>
                     <div className='rightsec'>
                       <div className='rightTop'>
@@ -261,7 +261,10 @@ function UserReviews() {
                   </div>
                 </>
               );
-            })}
+            })
+          ) : (
+            <div>Loading...</div>
+          )}
         </div>
         <ReviewModal
           isOpen={reviewModal}

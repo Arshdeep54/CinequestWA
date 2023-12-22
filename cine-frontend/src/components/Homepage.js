@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Navbar from './Navbar';
 import { Search, X } from 'lucide-react';
 import Switch from 'react-switch';
@@ -13,22 +13,159 @@ function Homepage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [filtersActive, setFiltersActive] = useState(false);
   const [languageFilter, setLanguageFilter] = useState('language');
-  const [searchFilter, setSearchFilter] = useState('');
+  const isInitialMount = useRef(true);
+  const searchInputRef = useRef(null);
+  const [searchFilter, setSearchFilter] = useState(
+    localStorage.getItem('search') || ''
+  );
+
   const [ReleasedINFilter, setReleasedINFilter] = useState('Release Year');
   const [genreFilter, setGenreFilter] = useState('Genre');
   const [platformFilter, setPlatformFilter] = useState('Platform');
   const [MoviesWithFilters, setMoviesWithFilters] = useState([]);
-  const getSearchedMovie = async () => {
-    const url = `http://127.0.0.1:8000/moviesapi/movies/?search=${searchFilter}`;
+  const [nofilter, setNofilter] = useState(
+    filtersActive &&
+      languageFilter == 'all' &&
+      ReleasedINFilter == 'all' &&
+      genreFilter == 'all' &&
+      platformFilter == 'all'
+  );
+  const itemsPerPage = 15;
+
+  const [visibleMovies, setVisibleMovies] = useState(itemsPerPage);
+  const [originalVisibleMovies, setOriginalVisibleMovies] =
+    useState(itemsPerPage);
+
+  const showMoreMovies = () => {
+    setOriginalVisibleMovies(visibleMovies);
+    setVisibleMovies((prevVisibleMovies) => prevVisibleMovies + itemsPerPage);
+  };
+  const getAllMovies = async () => {
+    const url = `http://127.0.0.1:8000/moviesapi/movies/`;
     const response = await axios.get(url);
-    console.log(response.data);
-    setMoviesWithFilters([...response.data]);
+    // console.log(response.data);
+    const all_movies = response.data;
+    // setMoviesWithFilters([...all_movies]);
+    // console.log(MoviesWithFilters);
+    if (nofilter) {
+      setMoviesWithFilters([...all_movies]);
+      console.log(MoviesWithFilters);
+    } else {
+      console.log(all_movies);
+      const filterMovieSet = all_movies.filter((movie) => {
+        return (
+          movie.language ===
+            (languageFilter === 'all' ? movie.language : languageFilter) &&
+          movie.platform ===
+            (platformFilter === 'all' ? movie.platform : platformFilter) &&
+          movie.release_date.slice(0, 4) ===
+            (ReleasedINFilter === 'all'
+              ? movie.release_date.slice(0, 4)
+              : ReleasedINFilter) &&
+          movie.genre === (genreFilter === 'all' ? movie.genre : genreFilter)
+        );
+      });
+      console.log(filterMovieSet);
+      // setMoviesWithFilters([]);
+      setMoviesWithFilters([...filterMovieSet]);
+      console.log(MoviesWithFilters);
+    }
+  };
+  const getSearchedMovie = async () => {
+    if (searchFilter.length != 0) {
+      const url = `http://127.0.0.1:8000/moviesapi/movies/?search=${searchFilter}`;
+      const response = await axios.get(url);
+      // console.log(response.data);
+      const Search_movies = response.data;
+      setMoviesWithFilters([...response.data]);
+      // console.log(MoviesWithFilters);
+      if (nofilter || !filtersActive) {
+        setMoviesWithFilters([...Search_movies]);
+        console.log(MoviesWithFilters);
+      } else {
+        console.log(Search_movies);
+        const filterMovieSet = Search_movies.filter((movie) => {
+          return (
+            movie.language ===
+              (languageFilter === 'all' ? movie.language : languageFilter) &&
+            movie.platform ===
+              (platformFilter === 'all' ? movie.platform : platformFilter) &&
+            movie.release_date.slice(0, 4) ===
+              (ReleasedINFilter === 'all'
+                ? movie.release_date.slice(0, 4)
+                : ReleasedINFilter) &&
+            movie.genre === (genreFilter === 'all' ? movie.genre : genreFilter)
+          );
+        });
+        console.log(filterMovieSet);
+        // setMoviesWithFilters([]);
+        setMoviesWithFilters([...filterMovieSet]);
+        console.log(MoviesWithFilters);
+      }
+    }
+  };
+  const showLessMovies = () => {
+    setVisibleMovies(originalVisibleMovies);
+  };
+  const getMoviesWithFilters = () => {
+    // console.log(MoviesWithFilters, languageFilter);
+    const filterMovieSet = MoviesWithFilters.filter((movie) => {
+      return (
+        movie.language ===
+          (languageFilter != 'all' ? languageFilter : movie.language) &&
+        movie.platform ===
+          (platformFilter != 'all' ? platformFilter : movie.platform) &&
+        movie.release_date.slice(0, 4) ===
+          (ReleasedINFilter != 'all'
+            ? ReleasedINFilter
+            : movie.release_date.slice(0, 4)) &&
+        movie.genre === (genreFilter != 'all' ? genreFilter : movie.genre)
+      );
+    });
+    console.log(filterMovieSet);
+    // setMoviesWithFilters([]);
+    setMoviesWithFilters([...filterMovieSet]);
     console.log(MoviesWithFilters);
   };
   useEffect(() => {
-    getSearchedMovie();
-  }, [searchFilter]);
+    if (searchFilter.length == 0) {
+      getAllMovies();
+      localStorage.setItem('search', '');
 
+      // getMoviesWithFilters();
+    } else {
+      getSearchedMovie();
+      localStorage.setItem('search', searchFilter);
+      // getMoviesWithFilters();
+    }
+  }, [
+    searchFilter,
+    languageFilter,
+    platformFilter,
+    ReleasedINFilter,
+    genreFilter,
+  ]);
+  useEffect(() => {
+    getAllMovies();
+    const handleShortcut = (event) => {
+      if (event.ctrlKey && event.key === 'm') {
+        searchInputRef.current.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleShortcut);
+
+    return () => {
+      document.removeEventListener('keydown', handleShortcut);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(MoviesWithFilters);
+  }, [MoviesWithFilters]);
+
+  const visibleMoviesList = MoviesWithFilters.slice(0, visibleMovies);
+  // console.log(visibleMoviesList, MoviesWithFilters);
   return (
     <>
       <Navbar loggedIn={loggedIn} />
@@ -36,16 +173,23 @@ function Homepage() {
         <div className='searchCont'>
           <div className='searchBox'>
             <input
-              placeholder='Search For Movies'
+              ref={searchInputRef}
+              placeholder='Search For Movies CTRL+M'
               className='searchInput'
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
             />
             <div className='searchIcons'>
               {searchFilter.length > 0 ? (
-                <X onClick={() => setSearchFilter('')} />
+                <X
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setSearchFilter('');
+                    localStorage.setItem('search', '');
+                  }}
+                />
               ) : (
-                <Search />
+                <Search style={{ cursor: 'pointer' }} />
               )}
             </div>
           </div>
@@ -55,7 +199,13 @@ function Homepage() {
           <div className='switchCont'>
             <div className='switch-inner'>
               <Switch
-                onChange={() => setFiltersActive(!filtersActive)}
+                onChange={() => {
+                  setFiltersActive(!filtersActive);
+                  setLanguageFilter('all');
+                  setPlatformFilter('all');
+                  setGenreFilter('all');
+                  setReleasedINFilter('all');
+                }}
                 checked={filtersActive}
                 offColor='#ccc'
                 onColor='#4caf50'
@@ -117,7 +267,7 @@ function Homepage() {
               <option value={'Crime'}>Crime</option>
               <option value={'Romance'}>Romance</option>
               <option value={'Horror'}>Horror</option>
-              <option value={'Fantacy'}>Fantacy</option>
+              <option value={'fantacy'}>Fantacy</option>
             </select>
           </div>
           <div className='filterBox'>
@@ -130,7 +280,7 @@ function Homepage() {
             >
               <option value={'all'}>All</option>
               <option value={'Netflix'}>Netflix</option>
-              <option value={'AMazonPrime'}>Amazon prime</option>
+              <option value={'amazonprime'}>Amazon prime</option>
               <option value={'Youtube'}>Youtube</option>
             </select>
             {/* </div>
@@ -143,9 +293,26 @@ function Homepage() {
             <MoviePageWithoutFilters />
           ) : (
             <>
-              {MoviesWithFilters.map((movie) => {
-                return <MovieCard movie={movie} />;
-              })}
+              <div className='allMovies'>
+                <div className='headText'>All Movies</div>
+                <div className='movie-grid'>
+                  {MoviesWithFilters.slice(0, visibleMovies).map((movie) => (
+                    <MovieCard movie={movie} />
+                  ))}
+                </div>
+
+                {visibleMovies > itemsPerPage && (
+                  <div style={{ marginTop: '10px' }}>
+                    <button onClick={showLessMovies}>See Less</button>
+                  </div>
+                )}
+
+                {visibleMovies < MoviesWithFilters.length && (
+                  <div style={{ marginTop: '10px' }}>
+                    <button onClick={showMoreMovies}>See More</button>
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>

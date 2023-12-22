@@ -9,6 +9,7 @@ import Signuppage from './components/Signuppage';
 import Services from './components/Services';
 import ContactPage from './components/ContactPage';
 import ChangePassword from './components/ChangePassword';
+import MoviePage from './components/MoviePage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Homepage />} />
+          <Route path='/movies/:uid' element={<MoviePage />} />
           <Route path='/about' element={<About />} />
           <Route path='/auth/profile' element={<Userprofile />} />
           <Route path='/auth/login' element={<Loginpage />} />

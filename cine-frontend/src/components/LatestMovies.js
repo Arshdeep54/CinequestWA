@@ -20,7 +20,7 @@ const LatestMovies = ({ orderBy }) => {
   const getLatestMovies = async () => {
     const url = `http://127.0.0.1:8000/moviesapi/movies/?ordering=-${orderBy}`;
     const response = await axios.get(url);
-    console.log(response.data);
+    // console.log(response.data);
     const latest_movies = response.data.slice(0, 20);
     setLatestMovies([...latest_movies]);
   };
