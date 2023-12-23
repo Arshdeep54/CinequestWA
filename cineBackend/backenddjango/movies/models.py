@@ -22,15 +22,39 @@ class Movie(models.Model):
     trailer_link = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     poster_link = models.TextField()
+    duration = models.CharField(max_length=255)
     language = models.CharField(max_length=255, default="Hindi")
     rating = models.DecimalField(max_digits=2, decimal_places=1)
     platform = models.CharField(max_length=255, default="Youtube")
     genre = models.CharField(max_length=255, default="comedy")
     release_date = models.DateField()
+    director = models.CharField(max_length=255)
+    writers = models.TextField()
+    starcast = models.TextField()
+    production = models.CharField(max_length=255)
+
+
+class FavouriteMovie:
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    movie = models.ForeignKey(
+        Movie, on_delete=models.CASCADE, related_name="isfavourite"
+    )
 
 
 class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    oneliner = models.TextField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="reviews")
     description = models.TextField()
     made_at = models.DateTimeField(auto_now_add=True)
+
+
+class ReviewFromWeb(models.Model):
+    review_id = models.CharField(max_length=255)
+    user = models.CharField(max_length=255)
+    movie = models.ForeignKey(
+        Movie, on_delete=models.CASCADE, related_name="webreviews"
+    )
+    oneliner = models.TextField()
+    description = models.TextField()
+    made_at = models.DateField()

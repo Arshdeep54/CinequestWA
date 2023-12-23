@@ -10,8 +10,8 @@ const MoviePageWithoutFilters = () => {
 
   return (
     <>
-      <LatestMovies orderBy={'rating'} />
       <LatestMovies orderBy={'release_date'} />
+      <LatestMovies orderBy={'rating'} />
       <AllMovies />
     </>
   );

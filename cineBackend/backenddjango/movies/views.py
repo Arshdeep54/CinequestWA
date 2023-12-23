@@ -10,10 +10,10 @@ from rest_framework.generics import (
 )
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Movie, Review
-from .serializers import MovieSerializer, ReviewSerializer
+from .models import Movie, Review, ReviewFromWeb
+from .serializers import MovieSerializer, ReviewSerializer, WebReviewSerializer
 from .filters import MovieFilter
 
 
@@ -57,7 +57,16 @@ class MovieDetails(RetrieveUpdateDestroyAPIView):
 
 class ReviewList(ListCreateAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+
+    # permission_classes = [IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == "GET":
+            # Allow any (no authentication) for GET requests
+            return [AllowAny()]
+        elif self.request.method == "POST":
+            # Require authentication for POST requests
+            return [IsAuthenticated()]
+        return super().get_permissions()
 
     def get_queryset(self):
         movie_id = self.kwargs["movie_id"]
@@ -73,6 +82,19 @@ class ReviewList(ListCreateAPIView):
 class ReviewDetails(RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+
+class WebReviewList(ListCreateAPIView):
+    serializer_class = WebReviewSerializer
+
+    def get_queryset(self):
+        movie_id = self.kwargs["movie_id"]
+        return ReviewFromWeb.objects.filter(movie__id=movie_id)
+
+    def perform_create(self, serializer):
+        movie_id = self.kwargs["movie_id"]
+        movie = Movie.objects.get(id=movie_id)
+        serializer.save(movie=movie)
 
 
 class UserReviewList(ListAPIView):

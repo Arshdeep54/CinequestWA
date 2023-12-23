@@ -10,6 +10,11 @@ urlpatterns = [
         name="review-list-create",
     ),
     path(
+        "movies/<int:movie_id>/webreviews/",
+        views.WebReviewList.as_view(),
+        name="web-review-list-create",
+    ),
+    path(
         "movies/<int:movie_id>/reviews/<int:pk>/",
         views.ReviewDetails.as_view(),
         name="review-detail",

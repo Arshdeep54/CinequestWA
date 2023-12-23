@@ -38,7 +38,7 @@ const LatestMovies = ({ orderBy }) => {
     <>
       <div className='moviesSection'>
         <div className='headText'>
-          {orderBy == 'release_date' ? 'Popular' : 'Latest'} Movies
+          {orderBy == 'release_date' ? 'Latest' : 'Popular'} Movies
         </div>
         <div className='horCont'>
           {currentPage > 1 && (
