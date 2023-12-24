@@ -1,0 +1,70 @@
+.MovieContainer {
+    padding: 40px;
+}
+.flex-cont{
+    display: flex;
+}
+.topCont {
+    justify-content: space-between;
+    padding: 0 24px;
+    align-items: center;
+    /* height: 117px; */
+}
+.top-left-top{
+    align-items: center;
+
+}
+.titleCont {
+    margin-right: 12px;
+    font-size: 32px;
+    font-weight: 700;
+}
+.watch-i-btn {
+    padding-top: 8px;
+}
+.top-left-bottom {
+    font-size: 16px;
+    font-weight: 500;
+}
+.topCont-right {
+    padding-right: 40px;
+}
+.labelText {
+    font-size: 18px;
+    font-weight: 600;
+}
+.ratingNumber {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    font-size: 20px;
+    font-weight: 700;
+    /* justify-content: center; */
+}
+span.star-cont {
+    padding-top: 4px;
+}
+.imdb-logo {
+    width: 83px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+/* midle cont */
+.middleCont-left {
+    width: 300px;
+}
+.imageCont{
+    width: 270px;
+    height: 396px;
+}
+.imageCont img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+
+

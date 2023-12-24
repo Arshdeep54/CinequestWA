@@ -7,7 +7,7 @@ const AllMovies = () => {
   const [visibleMovies, setVisibleMovies] = useState(itemsPerPage);
   const [originalVisibleMovies, setOriginalVisibleMovies] =
     useState(itemsPerPage);
-
+  // var allmovies_length = 15;
   const showMoreMovies = () => {
     setOriginalVisibleMovies(visibleMovies);
     setVisibleMovies((prevVisibleMovies) => prevVisibleMovies + itemsPerPage);
@@ -18,6 +18,7 @@ const AllMovies = () => {
     // console.log(response.data);
     const all_movies = response.data;
     setAllMovies([...all_movies]);
+    // allmovies_length = allMovies.length;
   };
   const showLessMovies = () => {
     setVisibleMovies(originalVisibleMovies);
@@ -42,11 +43,9 @@ const AllMovies = () => {
           </div>
         )}
 
-        {visibleMovies <= itemsPerPage && (
-          <div style={{ marginTop: '10px' }}>
-            <button onClick={showMoreMovies}>See More</button>
-          </div>
-        )}
+        <div style={{ marginTop: '10px' }}>
+          <button onClick={showMoreMovies}>See More</button>
+        </div>
       </div>
     </>
   );
