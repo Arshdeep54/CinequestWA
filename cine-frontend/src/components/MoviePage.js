@@ -26,6 +26,7 @@ const MoviePage = () => {
   });
   const [reviews, setReviews] = useState([]);
   const [isHovered, setHovered] = useState(false);
+  const [favourite, setFavourite] = useState(false);
   const getMovieAndReviews = async () => {
     console.log(uid);
     const movie_url = `http://127.0.0.1:8000/moviesapi/movies/${uid}`;
@@ -122,19 +123,28 @@ const MoviePage = () => {
           </div>
         </div>
         <div className='middleCont flex-cont'>
-          <div className='middleCont-left'>
+          <div className='middleCont-left flex-cont'>
             <div className='imageCont'>
               <img src={movie.poster_link} />
             </div>
-            <div className='addtofav-cont flex-cont'>
-              <div className='addtofav-text'>Add to Favourites</div>
+            <div
+              className='addtofav-cont flex-cont'
+              style={{
+                backgroundColor: favourite ? 'black' : 'white',
+                color: favourite ? 'white' : 'black',
+              }}
+              onClick={() => setFavourite(!favourite)}
+            >
+              <div className='addtofav-text'>
+                {favourite ? 'Added' : 'Add'} to Favourites
+              </div>
               <div className='bookmark-logo'>
                 <Bookmark />
               </div>
             </div>
           </div>
           <div className='middleCont-right'>
-            <div className='cont-a'>
+            <div className='cont-a flex-cont'>
               <div className='releasedCont flex-cont'>
                 <div className='labelText'>Released On</div>
                 <div className='releasedOnText'>

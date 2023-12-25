@@ -1,5 +1,6 @@
 .MovieContainer {
     padding: 40px;
+    background-color: #EEEEEE;
 }
 .flex-cont{
     display: flex;
@@ -52,8 +53,14 @@ span.star-cont {
 }
 
 /* midle cont */
+.middleCont {
+    padding-left: 20px;
+}
 .middleCont-left {
     width: 300px;
+   
+    align-items: center;
+    flex-direction: column;
 }
 .imageCont{
     width: 270px;
@@ -64,7 +71,29 @@ span.star-cont {
     height: 100%;
     object-fit: cover;
 }
+.addtofav-cont {
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    margin: 12px;
+    border: 2px solid;
+    width: 100%;
+    border-radius: 18px;
+    cursor: pointer;
+}
 
+.addtofav-text {
+    font-size: 22px;
+    font-weight: 600;
+}
+.bookmark-logo {
+    margin-left: 12px;
+    padding-top: 5px;
+}
+.middleCont-right {
+    margin: 20px;
+    width: 100%;
+}
 
 
 

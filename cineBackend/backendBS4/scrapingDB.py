@@ -31,18 +31,19 @@ def post_to_api(movie):
     print(movie["title"])
     for movie_item in list(res.json()):
         if movie["title"] == movie_item["title"]:
-            body = {
-                "storyline": movie["storyline"],
-                "platform_link": movie["platform_link"],
-                "starcast": movie["starcast"],
-                "writers": movie["writers"],
-                "genre": movie["genre"],
-            }
-            # print(url + str(movie_item["id"]) + "/")
-            response = requests.patch(
-                url=(url + str(movie_item["id"]) + "/"), data=body
-            )
-            print("data patched ", response.status_code)
+            # body = {
+            #     "storyline": movie["storyline"],
+            #     "platform_link": movie["platform_link"],
+            #     "starcast": movie["starcast"],
+            #     "writers": movie["writers"],
+            #     "genre": movie["genre"],
+            # }
+            # # print(url + str(movie_item["id"]) + "/")
+            # response = requests.patch(
+            #     url=(url + str(movie_item["id"]) + "/"), data=body
+            # )
+            # print("data patched ", response.status_code)
+            print("movie alreadyt there", movie["title"])
             return movie_item["id"]
     # # return -1
     response = requests.post(url, movie)
@@ -135,9 +136,9 @@ def post_reviews(movie_id, reviews_link):
                     "made_at": made_at,
                 }
                 post_review(review, movie_id)
-                print("reviews done ", movie_id)
+            print("reviews done ", movie_id)
 
-                # break
+            # break
             # .find_all("div",class_='lister-item mode-detail imdb-user-review  collapsable')
             # print(reviews_section)
             # print(len(reviews_section))
@@ -356,7 +357,7 @@ def getMovieDetails(link):
 
 # Function to scrape IMDb website and extract movie details
 def scrape_imdb():
-    url = "https://www.imdb.com/search/title/?title_type=feature&sort=moviemeter,asc&countries=IN&languages=hi"
+    url = "https://www.imdb.com/search/title/?title_type=feature&release_date=2018-01-25,2020-12-25&sort=moviemeter,asc&countries=IN&languages=hi"
 
     response = requests.get(url, headers=headers)
     print(response.status_code)
