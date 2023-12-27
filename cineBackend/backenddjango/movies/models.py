@@ -36,11 +36,12 @@ class Movie(models.Model):
     production = models.CharField(max_length=255)
 
 
-class FavouriteMovie:
+class FavouriteMovie(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="isfavourite"
     )
+    # last_update = models.DateTimeField(auto_now_add=True)
 
 
 class Review(models.Model):

@@ -4,6 +4,7 @@ from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .utils import Util
+import random
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -47,7 +48,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount
         fields = [
+            "profile_picture",
             "email",
+            "email_verified",
             "name",
             "first_name",
             "last_name",
@@ -133,6 +136,58 @@ class UserChangePassSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return attrs
+
+
+class SendOtpSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=255)
+
+    class Meta:
+        fields = ["email"]
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        if UserAccount.objects.filter(email=email).exists():
+            user = UserAccount.objects.get(email=email)
+            otp = random.randint(100000, 999999)
+            email_data = {
+                "email_subject": "Verify Email for CineQuest Account",
+                "email_body": "Hey "
+                + user.name
+                + ",\n"
+                + "This is an auto generated Email from CineQuest-Img.Here is your  otp \n"
+                + str(otp)
+                + " \nOtp valid only for 10 minutes ",
+                "email_to": email,
+            }
+            Util.sendEmail(email_data)
+            user.verification_otp = otp
+            user.save()
+
+            return attrs
+        else:
+            raise serializers.ValidationError("Not a registered email ")
+
+
+class OTPverifySerializer(serializers.Serializer):
+    verification_otp = serializers.IntegerField()
+    email = serializers.EmailField(max_length=255)
+
+    class Meta:
+        fields = ["verification_otp", "email"]
+
+    def validate(self, attrs):
+        verification_otp = attrs.get("verification_otp")
+        email = attrs.get("email")
+        if UserAccount.objects.filter(email=email).exists():
+            user = UserAccount.objects.get(email=email)
+            if verification_otp == user.verification_otp:
+                user.email_verified = True
+                user.verification_otp = 0
+                user.save()
+
+                return attrs
+
+        return serializers.ValidationError("OTP didn't matched")
 
 
 class SendPasswordResetEmailSerializer(serializers.Serializer):

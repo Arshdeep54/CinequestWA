@@ -10,6 +10,7 @@ import Services from './components/Services';
 import ContactPage from './components/ContactPage';
 import ChangePassword from './components/ChangePassword';
 import MoviePage from './components/MoviePage';
+import VerifyEmail from './components/VerifyEmail';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='/auth/profile' element={<Userprofile />} />
           <Route path='/auth/login' element={<Loginpage />} />
           <Route path='/auth/signup' element={<Signuppage />} />
+          <Route path='/auth/verifyemail' element={<VerifyEmail />} />
           <Route path='/auth/changepassword' element={<ChangePassword />} />
           <Route
             path='/auth/reset/:uid/:sent_token'

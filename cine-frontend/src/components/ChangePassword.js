@@ -24,7 +24,7 @@ function ChangePassword() {
       const response = await axios.post(url, body, config);
       console.log(response.data);
       if (response) {
-        navigate('/auth/profile');
+        navigate('/auth/login');
       }
     } else {
       const token = localStorage.getItem('access');

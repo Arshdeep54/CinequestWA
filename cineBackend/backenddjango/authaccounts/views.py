@@ -16,10 +16,13 @@ from .serializers import (
     UserChangePassSerializer,
     SendPasswordResetEmailSerializer,
     UserResetPasswordSerializer,
+    SendOtpSerializer,
+    OTPverifySerializer,
 )
 from .renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 # Create your views here.
@@ -78,44 +81,11 @@ class UserLoginView(APIView):
 class UserProfileView(RetrieveUpdateAPIView):
     # renderer_classes = [UserRenderer]
     serializer_class = UserProfileSerializer
+    parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
-
-    # def get(self, request, format=None):
-    #     serializer = UserProfileSerializer(request.user)
-    #     # if serializer.is_valid():
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-    #     # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class UserUpdateProfileView(UpdateAPIView):
-#     # renderer_classes = [UserRenderer]
-#     serializer_class = UserUpdateProfileSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self):
-#         return self.request.user
-
-#     # def patch(self, request):
-#     #     serializer = UserUpdateProfileSerializer(
-#     #         data=request.data, context={"user": request.user}
-#     #     )
-#     #     if serializer.is_valid(raise_exception=True):
-#     #         serializer.save()
-#     #         return Response(
-#     #             {"msg": "password changed successfully", "data": serializer.data},
-#     #             status=status.HTTP_200_OK,
-#     #         )
-#     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-#         product = get_object_or_404(Product, pk=id)
-#         serializer = ProductSerializer(product, data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response(serializer.data)
 
 
 class UserChangePasswordView(APIView):
@@ -129,6 +99,30 @@ class UserChangePasswordView(APIView):
         if serializer.is_valid(raise_exception=True):
             return Response(
                 {"msg": "password changed successfully"}, status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SendOtpView(APIView):
+    renderer_classes = [UserRenderer]
+
+    def post(self, request):
+        serializer = SendOtpSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            return Response(
+                {"msg": "OTP sent to your email"}, status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyOtpView(APIView):
+    renderer_classes = [UserRenderer]
+
+    def post(self, request):
+        serializer = OTPverifySerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            return Response(
+                {"msg": "Email verified successfully"}, status=status.HTTP_200_OK
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

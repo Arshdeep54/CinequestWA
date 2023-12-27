@@ -27,6 +27,7 @@ const MoviePage = () => {
   const [reviews, setReviews] = useState([]);
   const [isHovered, setHovered] = useState(false);
   const [favourite, setFavourite] = useState(false);
+  const [fav_id, setFav_id] = useState(null);
   const getMovieAndReviews = async () => {
     console.log(uid);
     const movie_url = `http://127.0.0.1:8000/moviesapi/movies/${uid}`;
@@ -38,6 +39,26 @@ const MoviePage = () => {
     console.log(reviews_res.status);
     if (reviews_res.status == 200) {
       setReviews([...reviews_res.data]);
+    }
+    if (localStorage.getItem('access').length > 0) {
+      const token = localStorage.getItem('access');
+      const config = {
+        headers: {
+          'Content-Type': 'aplication/json',
+          Authorization: `JWT ${token}`,
+        },
+      };
+      const url = `http://localhost:8000/moviesapi/user-favourite-movies/`;
+      const fav_movies = await axios.get(url, config);
+      console.log(fav_movies.data);
+      const isFavourite = fav_movies.data.some((movie) => movie.movie == uid);
+      const fav_movie = fav_movies.data.find((movie) => movie.movie == uid);
+      console.log(fav_movie);
+      if (fav_movie) {
+        setFav_id(fav_movie.id);
+      }
+      console.log(isFavourite);
+      setFavourite(isFavourite);
     }
   };
   const convertDate = (input_date) => {
@@ -56,6 +77,51 @@ const MoviePage = () => {
   useEffect(() => {
     getMovieAndReviews();
   }, []);
+
+  const handleFavourite = async () => {
+    if (localStorage.getItem('access').length > 0) {
+      const token = localStorage.getItem('access');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${token}`,
+        },
+      };
+      if (favourite) {
+        const url = `http://localhost:8000/moviesapi/favourite-movies/${fav_id}/`;
+        await axios
+          .delete(url, config)
+          .then((res) => {
+            if (res.status == 204) {
+              console.log('deleted');
+              setFavourite(false);
+            } else {
+              console.log('something went wrong');
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        const body = {
+          movie: uid,
+        };
+        const url = `http://localhost:8000/moviesapi/user-favourite-movies/`;
+        await axios
+          .post(url, body, config)
+          .then((res) => {
+            console.log(res.status);
+            if (res.status == 201) {
+              console.log('doneee');
+              setFavourite(true);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    }
+  };
   return (
     <>
       <Navbar />
@@ -133,7 +199,7 @@ const MoviePage = () => {
                 backgroundColor: favourite ? 'black' : 'white',
                 color: favourite ? 'white' : 'black',
               }}
-              onClick={() => setFavourite(!favourite)}
+              onClick={handleFavourite}
             >
               <div className='addtofav-text'>
                 {favourite ? 'Added' : 'Add'} to Favourites

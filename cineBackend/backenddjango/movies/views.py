@@ -12,8 +12,13 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Movie, Review, ReviewFromWeb
-from .serializers import MovieSerializer, ReviewSerializer, WebReviewSerializer
+from .models import Movie, Review, ReviewFromWeb, FavouriteMovie
+from .serializers import (
+    MovieSerializer,
+    ReviewSerializer,
+    WebReviewSerializer,
+    FavoriteMovieSerializer,
+)
 from .filters import MovieFilter
 
 
@@ -104,3 +109,32 @@ class UserReviewList(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Review.objects.filter(user=user)
+
+
+class UserFavMoviesList(ListCreateAPIView):
+    serializer_class = FavoriteMovieSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return FavouriteMovie.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class UserFavMovieDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = FavoriteMovieSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return FavouriteMovie.objects.filter(user=self.request.user)
+
+    # def get_object(self):
+    #     # Get the Movie ID from the URL
+    #     movie_id = self.kwargs.get("movie_id")
+    #     return FavouriteMovie.objects.get(user=self.request.user, movie__id=movie_id)
+
+    # def destroy(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     self.perform_destroy(instance)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)

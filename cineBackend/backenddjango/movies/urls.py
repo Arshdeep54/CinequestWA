@@ -20,4 +20,10 @@ urlpatterns = [
         name="review-detail",
     ),
     path("user-reviews/", views.UserReviewList.as_view()),
+    path("user-favourite-movies/", views.UserFavMoviesList.as_view()),
+    path(
+        "favourite-movies/<int:pk>/",
+        views.UserFavMovieDetailView.as_view(),
+        name="favorite-movie-detail",
+    ),
 ]

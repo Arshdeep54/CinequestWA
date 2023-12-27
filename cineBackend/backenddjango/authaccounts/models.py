@@ -4,6 +4,14 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.utils.translation import gettext_lazy as _
+
+from datetime import datetime
+
+
+def upload_to(instance, filename):
+    return "profile_images/{filename}".format(filename=filename)
+
 
 # Create your models here.
 
@@ -61,13 +69,18 @@ class UserAccount(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    profile_picture = models.ImageField(
+        _("Image"), upload_to=upload_to, default="profile_images/defaultprofile.png"
+    )
+    email_verified = models.BooleanField(default=False)
+    verification_otp = models.PositiveBigIntegerField(default=0)
     name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     gender = models.CharField(
         max_length=255, choices=GENDER_CHOICES, default=OTHERS, null=True
     )
-    date_of_birth = models.DateField(null=True)
+    date_of_birth = models.DateField(default=datetime.today().date())
     aboutmovieLife = models.TextField(null=True)
     mobile = models.BigIntegerField(null=True)
     is_active = models.BooleanField(default=True)
