@@ -25,7 +25,7 @@ def convertDate(date):
 
 
 def post_to_api(movie):
-    url = "http://127.0.0.1:8000/moviesapi/movies/"
+    url = "http://arshdeep54.pythonanywhere.com/moviesapi/movies/"
     res = requests.get(url)
     # print(len(list(res.json())))
     print(movie["title"])
@@ -53,7 +53,9 @@ def post_to_api(movie):
 
 
 def post_review(review, movie_id):
-    url = f"http://127.0.0.1:8000/moviesapi/movies/{movie_id}/webreviews/"
+    url = (
+        f"http://arshdeep54.pythonanywhere.com/moviesapi/movies/{movie_id}/webreviews/"
+    )
     res = requests.get(url)
     # print(len(list(res.json())))
     # print(review["review_id"])
@@ -357,7 +359,7 @@ def getMovieDetails(link):
 
 # Function to scrape IMDb website and extract movie details
 def scrape_imdb():
-    url = "https://www.imdb.com/search/title/?title_type=feature&release_date=2018-01-25,2020-12-25&sort=moviemeter,asc&countries=IN&languages=hi"
+    url = "https://www.imdb.com/search/title/?title_type=feature&sort=moviemeter,asc&countries=IN&languages=hi"
 
     response = requests.get(url, headers=headers)
     print(response.status_code)
@@ -390,12 +392,16 @@ def scrape_imdb():
             .ul.find_all("li")
         )
         #  now inside loop
+        count = 0
         for movie in movie_list:
+            count += 1
             link = movie.div.div.div.div.find(
                 "div", class_="sc-43986a27-0 gUQEVh"
             ).div.a["href"]
             # print(link)
             getMovieDetails(link)
+            if count > 39:
+                break
             # break
 
         # print(len(movie_list))

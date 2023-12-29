@@ -20,7 +20,7 @@ function ChangePassword() {
         password: password,
         password2: password2,
       };
-      const url = `http://127.0.0.1:8000/auth/user/resetpassword/${uid}/${sent_token}/`;
+      const url = ` ${process.env.REACT_APP_API_URL}auth/user/resetpassword/${uid}/${sent_token}/`;
       const response = await axios.post(url, body, config);
       console.log(response.data);
       if (response) {
@@ -38,7 +38,7 @@ function ChangePassword() {
           Authorization: `JWT ${token}`,
         },
       };
-      const url = 'http://127.0.0.1:8000/auth/user/changepassword/';
+      const url = ' ${process.env.REACT_APP_API_URL}auth/user/changepassword/';
       const response = await axios.post(url, body, config);
       console.log(response.data);
       if (response) {

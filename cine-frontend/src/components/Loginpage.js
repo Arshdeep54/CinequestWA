@@ -21,7 +21,7 @@ function Loginpage() {
           'Content-type': 'application/json',
         },
       };
-      const url = 'http://127.0.0.1:8000/auth/user/send-reset-password-email/';
+      const url = `${process.env.REACT_APP_API_URL}auth/user/send-reset-password-email/`;
       const response = await axios.post(url, userData, config);
       console.log(response.data);
     };
@@ -86,7 +86,7 @@ function Loginpage() {
           'Content-type': 'application/json',
         },
       };
-      const url = 'http://127.0.0.1:8000/auth/user/login/';
+      const url = `${process.env.REACT_APP_API_URL}auth/user/login/`;
       const response = await axios.post(url, userData, config);
       console.log(response.data);
       console.log(response.data['msg']);

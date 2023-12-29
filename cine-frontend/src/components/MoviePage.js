@@ -30,11 +30,11 @@ const MoviePage = () => {
   const [fav_id, setFav_id] = useState(null);
   const getMovieAndReviews = async () => {
     console.log(uid);
-    const movie_url = `http://127.0.0.1:8000/moviesapi/movies/${uid}`;
+    const movie_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}`;
     const response = await axios.get(movie_url);
     const movie_data = response.data;
     setMovie({ ...movie_data });
-    const review_url = `http://127.0.0.1:8000/moviesapi/movies/${uid}/webreviews/`;
+    const review_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/webreviews/`;
     const reviews_res = await axios.get(review_url);
     console.log(reviews_res.status);
     if (reviews_res.status == 200) {
@@ -48,7 +48,7 @@ const MoviePage = () => {
           Authorization: `JWT ${token}`,
         },
       };
-      const url = `http://localhost:8000/moviesapi/user-favourite-movies/`;
+      const url = `${process.env.REACT_APP_API_URL}moviesapi/user-favourite-movies/`;
       const fav_movies = await axios.get(url, config);
       console.log(fav_movies.data);
       const isFavourite = fav_movies.data.some((movie) => movie.movie == uid);
@@ -88,7 +88,7 @@ const MoviePage = () => {
         },
       };
       if (favourite) {
-        const url = `http://localhost:8000/moviesapi/favourite-movies/${fav_id}/`;
+        const url = `${process.env.REACT_APP_API_URL}moviesapi/favourite-movies/${fav_id}/`;
         await axios
           .delete(url, config)
           .then((res) => {
@@ -106,7 +106,7 @@ const MoviePage = () => {
         const body = {
           movie: uid,
         };
-        const url = `http://localhost:8000/moviesapi/user-favourite-movies/`;
+        const url = `${process.env.REACT_APP_API_URL}moviesapi/user-favourite-movies/`;
         await axios
           .post(url, body, config)
           .then((res) => {

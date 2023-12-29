@@ -29,7 +29,7 @@ function Signuppage() {
         'Content-type': 'application/json',
       },
     };
-    const url = 'http://127.0.0.1:8000/auth/user/register/';
+    const url = `${process.env.REACT_APP_API_URL}auth/user/register/`;
     const response = await axios.post(url, userData, config);
     console.log(response.data);
     console.log(response.data['msg']);

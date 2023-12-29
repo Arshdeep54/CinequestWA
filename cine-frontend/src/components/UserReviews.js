@@ -30,7 +30,7 @@ function UserReviews() {
         Authorization: `JWT ${token}`,
       },
     };
-    const url = 'http://127.0.0.1:8000/moviesapi/user-reviews/';
+    const url = `${process.env.REACT_APP_API_URL}moviesapi/user-reviews/`;
     const response = await axios.get(url, config);
     // console.log(response.data[0]);
 
@@ -38,7 +38,7 @@ function UserReviews() {
     setUserReviews(reviews);
   };
   const getMovies = async () => {
-    const url = 'http://127.0.0.1:8000/moviesapi/movies/';
+    const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/`;
     const response = await axios.get(url);
     // console.log(response.data);
     setMovies([...response.data]);
@@ -74,7 +74,7 @@ function UserReviews() {
         Authorization: `JWT ${token}`,
       },
     };
-    const url = `http://127.0.0.1:8000/moviesapi/movies/${review.movie}/reviews/${review.id}/`;
+    const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/`;
     const response = await axios.put(url, body, config);
     if (response.status == 200) {
       handleModalClose();

@@ -18,7 +18,7 @@ const LatestMovies = ({ orderBy }) => {
   const endIndex = startIndex + moviesPerPage;
   const currentMovies = latestMovies.slice(startIndex, endIndex);
   const getLatestMovies = async () => {
-    const url = `http://127.0.0.1:8000/moviesapi/movies/?ordering=-${orderBy}`;
+    const url = ` ${process.env.REACT_APP_API_URL}moviesapi/movies/?ordering=-${orderBy}`;
     const response = await axios.get(url);
     // console.log(response.data);
     const latest_movies = response.data.slice(0, 18);

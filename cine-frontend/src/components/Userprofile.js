@@ -30,7 +30,7 @@ function Userprofile() {
         Authorization: `JWT ${token}`,
       },
     };
-    const url = 'http://127.0.0.1:8000/auth/user/me/';
+    const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
     const response = await axios.get(url, config);
     console.log(response.data.profile_picture);
     const userprofile = {
@@ -87,7 +87,7 @@ function Userprofile() {
     if (profile_picture && profile_picture[0]) {
       formData.append('profile_picture', profile_picture[0]);
     }
-    const url = 'http://127.0.0.1:8000/auth/user/me/';
+    const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
     const response = await axios.patch(url, formData, config);
     console.log(response.data);
     if (response) {
@@ -130,7 +130,7 @@ function Userprofile() {
                       src={
                         profile_toShow
                           ? profile_toShow
-                          : 'http://127.0.0.1:8000/media/profile_images/defaultprofile.png'
+                          : ' ${process.env.REACT_APP_API_URL}media/profile_images/defaultprofile.png'
                       }
                       alt='React Image'
                     />

@@ -17,7 +17,7 @@ const VerifyEmail = () => {
         Authorization: `JWT ${token}`,
       },
     };
-    const url = 'http://127.0.0.1:8000/auth/user/me/';
+    const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
     const response = await axios.get(url, config);
     setCurentUserEmail(response.data.email);
   };
@@ -38,7 +38,7 @@ const VerifyEmail = () => {
             'Content-type': 'application/json',
           },
         };
-        const url = 'http://127.0.0.1:8000/auth/user/send-otp/';
+        const url = `${process.env.REACT_APP_API_URL}auth/user/send-otp/`;
         const response = await axios.post(url, userData, config);
         if (response.status == 200) {
           alert('Otp sent');
@@ -90,7 +90,7 @@ const VerifyEmail = () => {
           'Content-type': 'application/json',
         },
       };
-      const url = 'http://127.0.0.1:8000/auth/user/send-otp/';
+      const url = `${process.env.REACT_APP_API_URL}auth/user/send-otp/`;
       const response = await axios.post(url, userData, config);
       if (response.status == 200) {
         alert('Otp sent');
@@ -109,7 +109,7 @@ const VerifyEmail = () => {
           'Content-type': 'application/json',
         },
       };
-      const url = 'http://127.0.0.1:8000/auth/user/verify-otp/';
+      const url = `${process.env.REACT_APP_API_URL}auth/user/verify-otp/`;
       const response = await axios.post(url, userData, config);
       if (response.status == 200) {
         alert('email verified');

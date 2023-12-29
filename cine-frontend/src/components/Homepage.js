@@ -18,7 +18,7 @@ function Homepage() {
   const [searchFilter, setSearchFilter] = useState(
     localStorage.getItem('search') || ''
   );
-
+  console.log(process.env.REACT_APP_API_URL);
   const [ReleasedINFilter, setReleasedINFilter] = useState('Release Year');
   const [genreFilter, setGenreFilter] = useState('Genre');
   const [platformFilter, setPlatformFilter] = useState('Platform');
@@ -41,7 +41,7 @@ function Homepage() {
     setVisibleMovies((prevVisibleMovies) => prevVisibleMovies + itemsPerPage);
   };
   const getAllMovies = async () => {
-    const url = `http://127.0.0.1:8000/moviesapi/movies/`;
+    const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/`;
     const response = await axios.get(url);
     // console.log(response.data);
     const all_movies = response.data;
@@ -73,7 +73,7 @@ function Homepage() {
   };
   const getSearchedMovie = async () => {
     if (searchFilter.length != 0) {
-      const url = `http://127.0.0.1:8000/moviesapi/movies/?search=${searchFilter}`;
+      const url = ` ${process.env.REACT_APP_API_URL}moviesapi/movies/?search=${searchFilter}`;
       const response = await axios.get(url);
       // console.log(response.data);
       const Search_movies = response.data;

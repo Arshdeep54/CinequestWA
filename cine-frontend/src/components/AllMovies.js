@@ -13,7 +13,7 @@ const AllMovies = () => {
     setVisibleMovies((prevVisibleMovies) => prevVisibleMovies + itemsPerPage);
   };
   const getAllMovies = async () => {
-    const url = `http://127.0.0.1:8000/moviesapi/movies/`;
+    const url = ` ${process.env.REACT_APP_API_URL}moviesapi/movies/`;
     const response = await axios.get(url);
     // console.log(response.data);
     const all_movies = response.data;
@@ -26,6 +26,7 @@ const AllMovies = () => {
   useEffect(() => {
     getAllMovies();
   }, []);
+
   const visibleMoviesList = allMovies.slice(0, visibleMovies);
   return (
     <>
