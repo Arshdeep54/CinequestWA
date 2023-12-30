@@ -2,21 +2,25 @@ import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Bookmark, Info, PlayCircle, Star, Youtube } from 'lucide-react';
+import { Bookmark, Info, PlayCircle, Star } from 'lucide-react';
 import IMDBlogo from '../assets/imdblogo.png';
-import YoutubeLogo from '../assets/youtubelogo.png';
+// import YoutubeLogo from '../assets/youtubelogo.png';
+import { TailSpin } from 'react-loader-spinner';
 import '../cssFiles/MoviePage.css';
+import ReviewComp from './ReviewComp';
 const MoviePage = () => {
   const { uid } = useParams();
   const [movie, setMovie] = useState({
     title: '',
     trailer_link: '',
     description: '',
+    storyline: '',
     poster_link: '',
     duration: '',
     language: '',
     rating: '',
     platform: '',
+    platform_link: '',
     genre: '',
     release_date: '',
     director: '',
@@ -27,18 +31,25 @@ const MoviePage = () => {
   const [reviews, setReviews] = useState([]);
   const [isHovered, setHovered] = useState(false);
   const [favourite, setFavourite] = useState(false);
+  const [addToFav, setAddToFav] = useState(false);
   const [fav_id, setFav_id] = useState(null);
+  const [genreList, setGenreList] = useState([]);
   const getMovieAndReviews = async () => {
     console.log(uid);
     const movie_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}`;
     const response = await axios.get(movie_url);
     const movie_data = response.data;
     setMovie({ ...movie_data });
+    setGenreList([...response.data.genre.split(',')]);
+    const review_url_user = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/reviews/`;
+    const reviews_user = await axios.get(review_url_user);
+    console.log(reviews_user.data);
+    setReviews([...reviews_user.data]);
     const review_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/webreviews/`;
     const reviews_res = await axios.get(review_url);
     console.log(reviews_res.status);
-    if (reviews_res.status == 200) {
-      setReviews([...reviews_res.data]);
+    if (reviews_res.status === 200) {
+      setReviews([...reviews, ...reviews_res.data]);
     }
     if (localStorage.getItem('access').length > 0) {
       const token = localStorage.getItem('access');
@@ -48,17 +59,19 @@ const MoviePage = () => {
           Authorization: `JWT ${token}`,
         },
       };
+      setAddToFav(true);
       const url = `${process.env.REACT_APP_API_URL}moviesapi/user-favourite-movies/`;
       const fav_movies = await axios.get(url, config);
       console.log(fav_movies.data);
-      const isFavourite = fav_movies.data.some((movie) => movie.movie == uid);
-      const fav_movie = fav_movies.data.find((movie) => movie.movie == uid);
+      const isFavourite = fav_movies.data.some((movie) => movie.movie === uid);
+      const fav_movie = fav_movies.data.find((movie) => movie.movie === uid);
       console.log(fav_movie);
       if (fav_movie) {
         setFav_id(fav_movie.id);
       }
       console.log(isFavourite);
       setFavourite(isFavourite);
+      setAddToFav(false);
     }
   };
   const convertDate = (input_date) => {
@@ -75,10 +88,13 @@ const MoviePage = () => {
     return date.toString().substring(0, 4);
   };
   useEffect(() => {
+    const yOffset = document.getElementById('moviecontainer').offsetTop;
+    window.scrollTo(0, yOffset);
     getMovieAndReviews();
   }, []);
 
   const handleFavourite = async () => {
+    setAddToFav(true);
     if (localStorage.getItem('access').length > 0) {
       const token = localStorage.getItem('access');
       const config = {
@@ -92,9 +108,11 @@ const MoviePage = () => {
         await axios
           .delete(url, config)
           .then((res) => {
-            if (res.status == 204) {
+            if (res.status === 204) {
               console.log('deleted');
               setFavourite(false);
+              setFav_id(null);
+              setAddToFav(false);
             } else {
               console.log('something went wrong');
             }
@@ -111,9 +129,12 @@ const MoviePage = () => {
           .post(url, body, config)
           .then((res) => {
             console.log(res.status);
-            if (res.status == 201) {
+            if (res.status === 201) {
+              console.log(res.data);
+              setFav_id(res.data.id);
               console.log('doneee');
               setFavourite(true);
+              setAddToFav(false);
             }
           })
           .catch((e) => {
@@ -121,11 +142,13 @@ const MoviePage = () => {
           });
       }
     }
+    setAddToFav(false);
   };
+
   return (
     <>
       <Navbar />
-      <div className='MovieContainer'>
+      <div className='MovieContainer' id='moviecontainer'>
         <div className='topCont flex-cont'>
           <div className='topCont-left'>
             <div className='top-left-top flex-cont'>
@@ -179,7 +202,12 @@ const MoviePage = () => {
               </div>
               <div className='imdb-logo'>
                 <span>
-                  <img src={IMDBlogo} width={'100%'} height={'100%'} />
+                  <img
+                    src={IMDBlogo}
+                    width={'100%'}
+                    height={'100%'}
+                    alt='imdblogo'
+                  />
                 </span>
                 <a href='https://www.imdb.com' title='Rate on Official Website'>
                   <Info color='black' />
@@ -191,7 +219,7 @@ const MoviePage = () => {
         <div className='middleCont flex-cont'>
           <div className='middleCont-left flex-cont'>
             <div className='imageCont'>
-              <img src={movie.poster_link} />
+              <img src={movie.poster_link} alt='poster_link' />
             </div>
             <div
               className='addtofav-cont flex-cont'
@@ -199,14 +227,29 @@ const MoviePage = () => {
                 backgroundColor: favourite ? 'black' : 'white',
                 color: favourite ? 'white' : 'black',
               }}
-              onClick={handleFavourite}
+              onClick={addToFav ? null : handleFavourite}
             >
-              <div className='addtofav-text'>
-                {favourite ? 'Added' : 'Add'} to Favourites
-              </div>
-              <div className='bookmark-logo'>
-                <Bookmark />
-              </div>
+              {addToFav ? (
+                <TailSpin
+                  visible={true}
+                  height='25'
+                  width='25'
+                  color='#4fa94d'
+                  ariaLabel='tail-spin-loading'
+                  radius='1'
+                  wrapperStyle={{}}
+                  wrapperClass=''
+                />
+              ) : (
+                <>
+                  <div className='addtofav-text'>
+                    {favourite ? 'Added' : 'Add'} to Favourites
+                  </div>
+                  <div className='bookmark-logo'>
+                    <Bookmark />
+                  </div>
+                </>
+              )}
             </div>
           </div>
           <div className='middleCont-right'>
@@ -217,7 +260,67 @@ const MoviePage = () => {
                   {convertDate(movie.release_date)}
                 </div>
               </div>
+              <div className='durationCont flex-cont'>
+                <div className='labelText'>Duration</div>
+                <div className='releasedOnText'>{movie.duration}</div>
+              </div>
             </div>
+            <div className='cont-b '>
+              <div className='descHead'>Description</div>
+              <div className='descText'>{movie.description}</div>
+            </div>
+            <div className='cont-c flex-cont'>
+              {genreList.slice(0, genreList.length - 1).map((genre) => {
+                return <div className='genreitem'>{genre}</div>;
+              })}
+            </div>
+            <div className='cont-d listcont'>Language: {movie.language}</div>
+            <div className='cont-e listcont'>Director: {movie.director}</div>
+            <div className='cont-f listcont'>Starcast: {movie.starcast}</div>
+            <div className='cont-g listcont'>Writer: {movie.writers}</div>
+            <div className='cont-h'>
+              <div className='watchCont'>
+                <div className='labelText'>Watch Now</div>
+                <div className='platText'>
+                  {movie.platform_link.length > 0 ? (
+                    <a href={movie.platform_link}>
+                      {movie.platform === 'Theaters'
+                        ? 'Official Site'
+                        : movie.platform}
+                    </a>
+                  ) : (
+                    <div>{movie.platform}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='StorylineCont'>
+          <div className='storylinehead'>Storyline</div>
+          <div className='storyText'>{movie.storyline}</div>
+        </div>
+        <div className='reviewCont'>
+          <div className='cont-aa flex-cont'>
+            <div className='reviewCount'>{reviews.length} Reviews</div>
+            <div>Sort Dropdown here </div>
+          </div>
+          <div className='adduserrev flex-cont'>
+            <div className='userProfile'>
+              <img
+                src='http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png'
+                width={'100% '}
+                height={'100%'}
+              />
+            </div>
+            <div className='inputRevCont'>
+              <input className='revInput' placeholder='Add your Review' />
+            </div>
+          </div>
+          <div className='showRevs'>
+            {reviews.map((review) => {
+              return <ReviewComp review={review} />;
+            })}
           </div>
         </div>
       </div>

@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MovieCard from './MovieCard';
 import axios from 'axios';
-import {
-  ChevronLeft,
-  ChevronLeftCircle,
-  ChevronLeftSquare,
-  ChevronRight,
-  ChevronRightSquare,
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 const LatestMovies = ({ orderBy }) => {
   const [latestMovies, setLatestMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

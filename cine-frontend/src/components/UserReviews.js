@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../cssFiles/UserProfile.css';
 import axios from 'axios';
-import {
-  Cross,
-  CrossIcon,
-  Delete,
-  DeleteIcon,
-  EditIcon,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { EditIcon, Trash2, X } from 'lucide-react';
 function UserReviews() {
   const [userReviews, setUserReviews] = useState([]);
   const [movies, setMovies] = useState([]);
@@ -76,7 +68,7 @@ function UserReviews() {
     };
     const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/`;
     const response = await axios.put(url, body, config);
-    if (response.status == 200) {
+    if (response.status === 200) {
       handleModalClose();
     } else {
       handleModalClose('error updating the review');

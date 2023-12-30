@@ -31,18 +31,20 @@ def post_to_api(movie):
     print(movie["title"])
     for movie_item in list(res.json()):
         if movie["title"] == movie_item["title"]:
-            # body = {
-            #     "storyline": movie["storyline"],
-            #     "platform_link": movie["platform_link"],
-            #     "starcast": movie["starcast"],
-            #     "writers": movie["writers"],
-            #     "genre": movie["genre"],
-            # }
-            # # print(url + str(movie_item["id"]) + "/")
-            # response = requests.patch(
-            #     url=(url + str(movie_item["id"]) + "/"), data=body
-            # )
-            # print("data patched ", response.status_code)
+            body = {
+                # "storyline": movie["storyline"],
+                "platform": movie["platform"],
+                "platform_link": movie["platform_link"],
+                # "starcast": movie["starcast"],
+                # "writers": movie["writers"],
+                # "genre": movie["genre"],
+                # "language": movie["language"],
+            }
+            # print(url + str(movie_item["id"]) + "/")
+            response = requests.patch(
+                url=(url + str(movie_item["id"]) + "/"), data=body
+            )
+            print("data patched ", response.status_code)
             print("movie alreadyt there", movie["title"])
             return movie_item["id"]
     # # return -1
@@ -94,6 +96,7 @@ def getStoryline(link):
             # print(storyline)
     except Exception as e:
         print(e)
+        return ""
 
 
 def post_reviews(movie_id, reviews_link):
@@ -203,7 +206,7 @@ def getMovieDetails(link):
             for genre in genre_list:
                 genrecount += 1
                 movie_genre += genre.span.text
-                if genrecount > 0:
+                if genrecount < len(genre_list):
                     movie_genre += " ,"
             description = (
                 movie_detail.section.find("div", class_="sc-e226b0e3-4 dEqUUl")
@@ -227,7 +230,7 @@ def getMovieDetails(link):
             for writer in writers_list:
                 writercount += 1
                 writers += writer.a.text
-                if writercount > 1:
+                if writercount < len(writers_list):
                     writers += " ,"
             starcast_list = cast_comp[2].div.ul.find_all("li")
             starcast = ""
@@ -236,7 +239,7 @@ def getMovieDetails(link):
                 starcount += 1
                 starcast += star.a.text
                 # starcast += " "
-                if starcount > 1:
+                if starcount < len(starcast_list):
                     starcast += " ,"
 
             title = title_year_comp.h1.span.text
@@ -300,6 +303,12 @@ def getMovieDetails(link):
                         release_date = convertDate(release_date)
                     elif list_item.a.text == "Production companies":
                         production = list_item.div.ul.li.a.text
+                    elif (
+                        list_item.a.text == "Official sites"
+                        or list_item.a.text == "Official site"
+                    ):
+                        platform = list_item.div.ul.li.a.text
+                        platform_link = list_item.div.ul.a["href"]
                 else:
                     if (
                         list_item.span.text == "Language"
@@ -312,10 +321,13 @@ def getMovieDetails(link):
                             langcount += 1
                             language += lang.a.text
                             # language += " "
-                            if langcount > 1:
+                            if langcount < len(languages):
                                 language += " ,"
 
-                    if list_item.span.text == "Official sites":
+                    if (
+                        list_item.span.text == "Official sites"
+                        or list_item.span.text == "Official site"
+                    ):
                         platform = list_item.div.ul.li.a.text
                         platform_link = list_item.div.ul.a["href"]
 
@@ -393,15 +405,17 @@ def scrape_imdb():
         )
         #  now inside loop
         count = 0
+
         for movie in movie_list:
             count += 1
             link = movie.div.div.div.div.find(
                 "div", class_="sc-43986a27-0 gUQEVh"
             ).div.a["href"]
+            # link="https://www.imdb.com/title/tt12393526/"
             # print(link)
             getMovieDetails(link)
-            if count > 39:
-                break
+            # if count > 39:
+            # break
             # break
 
         # print(len(movie_list))
@@ -413,3 +427,6 @@ def scrape_imdb():
 
 if __name__ == "__main__":
     scrape_imdb()
+    # link = "https://www.imdb.com/title/tt12393526/"
+    # print(link)
+    # getMovieDetails(link)

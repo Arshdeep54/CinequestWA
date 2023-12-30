@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './Navbar';
 import '../cssFiles/Login.css';
 import axios from 'axios';
-import {
-  Link,
-  NavLink,
-  Navigate,
-  useNavigate,
-  useNavigation,
-} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 function Signuppage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');

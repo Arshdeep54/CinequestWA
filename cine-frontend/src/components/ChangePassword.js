@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../cssFiles/Login.css';
 import Navbar from './Navbar';
 import axios from 'axios';
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 function ChangePassword() {
   const navigate = useNavigate();
   const { uid, sent_token } = useParams();

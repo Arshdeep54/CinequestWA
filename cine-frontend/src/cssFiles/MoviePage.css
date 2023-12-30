@@ -94,6 +94,131 @@ span.star-cont {
     margin: 20px;
     width: 100%;
 }
-
-
-
+.middleCont-right {
+    margin: 17px 36px;
+    width: 100%;
+}
+.cont-a {
+    height: 40px;
+    justify-content: space-around;
+    padding-right: 117px;
+    margin-bottom: 7px;
+}
+.releasedOnText{
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+        font-size: 18px;
+    margin-left: 9px;
+}
+.releasedCont {
+    align-items: center;
+    border-radius: 8px;
+    background-color: #e1e1e1;
+    padding: 2px 5px;
+}
+.durationCont {
+    /* font-size: 20px; */
+    /* font-weight: 700; */
+    align-items: center;
+    padding: 1px 4px;
+    background-color: #e1e1e1;
+    border-radius: 4px;
+}
+.cont-b{
+    min-height: 70px;
+    height: max-content;
+    /* border: 1px solid; */
+    padding-top: 5px;
+    padding: 7px;
+    border-radius: 9px;
+    background-color: #e1e1e1;
+}
+.descHead {
+    font-size: 19px;
+    font-weight: 600;
+}
+.cont-c {
+    margin-top: 6px;
+    padding-left: 10px;
+    height: 44px;
+    margin-bottom: 18px;
+}
+.genreitem {
+    margin: 4px 23px 4px 4px;
+    background-color: #e1e1e1;
+    padding: 5px;
+    border-radius: 17px;
+    font-size: 19px;
+    font-weight: 500;
+}
+.listcont {
+    border-top: 2px solid;
+    padding: 9px 5px 8px;
+    font-size: 19px;
+    background-color: whitesmoke;
+}
+.cont-h{
+    align-items: end;
+    padding-right: 24px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+}
+.watchCont {
+    border: 0.075rem solid;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: #e1e1e1;
+}
+.platText {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
+.StorylineCont {
+    padding: 21px;
+    background-color: #e1e1e1;
+    border-radius: 26px;
+}
+.storylinehead {
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.storyText {
+    font-size: 20px;
+    text-align: justify;
+}
+.userProfile {
+    width: 40px;
+    height: 40px;
+    margin-left: 35px;
+    margin-right: 20px;
+}
+.userProfile img{
+    border-radius: 50%;
+    display: inline-block;
+}
+.reviewCount {
+    font-size: 26px;
+    font-weight: 600;
+}
+.cont-aa {
+    align-items: center;
+}
+.adduserrev {
+    margin: 15px 7px;
+    height: 65px;
+    align-items: center;
+}
+input.revInput {
+    width: 90%;
+    border: none;
+    outline: none;
+    height: 80%;
+    border-bottom: 1px solid;
+    margin-left: 16px;
+}
