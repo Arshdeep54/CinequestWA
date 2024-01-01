@@ -49,7 +49,12 @@ class Review(models.Model):
     oneliner = models.TextField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="reviews")
     description = models.TextField()
+    userProfile = models.TextField(
+        default="http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png"
+    )
     made_at = models.DateTimeField(auto_now_add=True)
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
 
 
 class ReviewFromWeb(models.Model):
@@ -58,6 +63,11 @@ class ReviewFromWeb(models.Model):
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="webreviews"
     )
+    userProfile = models.TextField(
+        default="http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png"
+    )
     oneliner = models.TextField()
     description = models.TextField()
     made_at = models.DateField()
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)

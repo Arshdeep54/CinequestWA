@@ -102,6 +102,11 @@ class WebReviewList(ListCreateAPIView):
         serializer.save(movie=movie)
 
 
+class WebReviewDetails(RetrieveUpdateDestroyAPIView):
+    queryset = ReviewFromWeb.objects.all()
+    serializer_class = WebReviewSerializer
+
+
 class UserReviewList(ListAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]

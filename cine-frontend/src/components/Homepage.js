@@ -21,14 +21,13 @@ function Homepage() {
   console.log(process.env.REACT_APP_API_URL);
   const [ReleasedINFilter, setReleasedINFilter] = useState('Release Year');
   const [genreFilter, setGenreFilter] = useState('Genre');
-  const [platformFilter, setPlatformFilter] = useState('Platform');
+  // const [platformFilter, setPlatformFilter] = useState('Platform');
   const [MoviesWithFilters, setMoviesWithFilters] = useState([]);
   const [nofilter, setNofilter] = useState(
     filtersActive &&
       languageFilter == 'all' &&
       ReleasedINFilter == 'all' &&
-      genreFilter == 'all' &&
-      platformFilter == 'all'
+      genreFilter == 'all'
   );
   const itemsPerPage = 15;
 
@@ -54,15 +53,19 @@ function Homepage() {
       console.log(all_movies);
       const filterMovieSet = all_movies.filter((movie) => {
         return (
-          movie.language ===
-            (languageFilter === 'all' ? movie.language : languageFilter) &&
-          movie.platform ===
-            (platformFilter === 'all' ? movie.platform : platformFilter) &&
-          movie.release_date.slice(0, 4) ===
-            (ReleasedINFilter === 'all'
-              ? movie.release_date.slice(0, 4)
-              : ReleasedINFilter) &&
-          movie.genre === (genreFilter === 'all' ? movie.genre : genreFilter)
+          movie.language.includes(
+            languageFilter === 'all' ? movie.language : languageFilter
+          ) &&
+          movie.release_date
+            .slice(0, 4)
+            .includes(
+              ReleasedINFilter === 'all'
+                ? movie.release_date.slice(0, 4)
+                : ReleasedINFilter
+            ) &&
+          movie.genre.includes(
+            genreFilter === 'all' ? movie.genre : genreFilter
+          )
         );
       });
       console.log(filterMovieSet);
@@ -86,15 +89,19 @@ function Homepage() {
         console.log(Search_movies);
         const filterMovieSet = Search_movies.filter((movie) => {
           return (
-            movie.language ===
-              (languageFilter === 'all' ? movie.language : languageFilter) &&
-            movie.platform ===
-              (platformFilter === 'all' ? movie.platform : platformFilter) &&
-            movie.release_date.slice(0, 4) ===
-              (ReleasedINFilter === 'all'
-                ? movie.release_date.slice(0, 4)
-                : ReleasedINFilter) &&
-            movie.genre === (genreFilter === 'all' ? movie.genre : genreFilter)
+            movie.language.includes(
+              languageFilter === 'all' ? movie.language : languageFilter
+            ) &&
+            movie.release_date
+              .slice(0, 4)
+              .includes(
+                ReleasedINFilter === 'all'
+                  ? movie.release_date.slice(0, 4)
+                  : ReleasedINFilter
+              ) &&
+            movie.genre.includes(
+              genreFilter === 'all' ? movie.genre : genreFilter
+            )
           );
         });
         console.log(filterMovieSet);
@@ -111,15 +118,19 @@ function Homepage() {
     // console.log(MoviesWithFilters, languageFilter);
     const filterMovieSet = MoviesWithFilters.filter((movie) => {
       return (
-        movie.language ===
-          (languageFilter != 'all' ? languageFilter : movie.language) &&
-        movie.platform ===
-          (platformFilter != 'all' ? platformFilter : movie.platform) &&
-        movie.release_date.slice(0, 4) ===
-          (ReleasedINFilter != 'all'
-            ? ReleasedINFilter
-            : movie.release_date.slice(0, 4)) &&
-        movie.genre === (genreFilter != 'all' ? genreFilter : movie.genre)
+        movie.language.includes(
+          languageFilter === 'all' ? movie.language : languageFilter
+        ) &&
+        (movie.release_date
+          .slice(0, 4)
+          .includes(
+            ReleasedINFilter === 'all'
+              ? movie.release_date.slice(0, 4)
+              : ReleasedINFilter
+          ) ||
+          (ReleasedINFilter === 'below' &&
+            parseInt(movie.release_date.slice(0, 4)) < 2019)) &&
+        movie.genre.includes(genreFilter === 'all' ? movie.genre : genreFilter)
       );
     });
     console.log(filterMovieSet);
@@ -141,7 +152,7 @@ function Homepage() {
   }, [
     searchFilter,
     languageFilter,
-    platformFilter,
+    // platformFilter,
     ReleasedINFilter,
     genreFilter,
   ]);
@@ -202,7 +213,7 @@ function Homepage() {
                 onChange={() => {
                   setFiltersActive(!filtersActive);
                   setLanguageFilter('all');
-                  setPlatformFilter('all');
+                  // setPlatformFilter('all');
                   setGenreFilter('all');
                   setReleasedINFilter('all');
                 }}
@@ -271,8 +282,8 @@ function Homepage() {
             </select>
           </div>
           <div className='filterBox'>
-            <label className='selectlabel'>Available On</label>
-            <select
+            {/* <label className='selectlabel'>Available On</label> */}
+            {/* <select
               className='selectF'
               value={platformFilter}
               disabled={!filtersActive}
@@ -282,7 +293,7 @@ function Homepage() {
               <option value={'Netflix'}>Netflix</option>
               <option value={'amazonprime'}>Amazon prime</option>
               <option value={'Youtube'}>Youtube</option>
-            </select>
+            </select> */}
             {/* </div>
             </div> */}
           </div>

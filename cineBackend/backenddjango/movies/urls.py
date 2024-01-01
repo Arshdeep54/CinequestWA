@@ -19,6 +19,11 @@ urlpatterns = [
         views.ReviewDetails.as_view(),
         name="review-detail",
     ),
+    path(
+        "movies/<int:movie_id>/webreviews/<int:pk>/",
+        views.WebReviewDetails.as_view(),
+        name="web-review-detail",
+    ),
     path("user-reviews/", views.UserReviewList.as_view()),
     path("user-favourite-movies/", views.UserFavMoviesList.as_view()),
     path(

@@ -33,24 +33,28 @@ def post_to_api(movie):
         if movie["title"] == movie_item["title"]:
             body = {
                 # "storyline": movie["storyline"],
-                "platform": movie["platform"],
-                "platform_link": movie["platform_link"],
+                # "platform": movie["platform"],
+                # "platform_link": movie["platform_link"],
                 # "starcast": movie["starcast"],
                 # "writers": movie["writers"],
                 # "genre": movie["genre"],
                 # "language": movie["language"],
             }
             # print(url + str(movie_item["id"]) + "/")
-            response = requests.patch(
-                url=(url + str(movie_item["id"]) + "/"), data=body
-            )
-            print("data patched ", response.status_code)
+            # response = requests.patch(
+            #     url=(url + str(movie_item["id"]) + "/"), data=body
+            # )
+            # print("data patched ", response.status_code)
             print("movie alreadyt there", movie["title"])
             return movie_item["id"]
     # # return -1
     response = requests.post(url, movie)
     print(response.status_code, "new movie added:", movie["title"])
-    return response.json()["id"]
+    if response.status_code == 201:
+        return response.json()["id"]
+    else:
+        return 0
+
     # return 0
 
 
@@ -241,7 +245,16 @@ def getMovieDetails(link):
                 # starcast += " "
                 if starcount < len(starcast_list):
                     starcast += " ,"
-
+            # sc-e226b0e3-11 kkLqLt
+            # platform_comp = (
+            #     movie_detail.section.find("div", class_="sc-e226b0e3-4 dEqUUl")
+            #     .find("div", class_="sc-e226b0e3-6 CUzkx")
+            #     .find("div", class_="sc-e226b0e3-11 kkLqLt")
+            #     .find("div", class_="sc-cbc7ae81-6 eYDEtr")
+            #     .div
+            # )
+            # platform_text = platform_comp.div
+            # print(platform_text)
             title = title_year_comp.h1.span.text
             year = title_year_comp.ul.li.a.text
             duration_yearlist = title_year_comp.ul.find_all("li")
@@ -362,7 +375,8 @@ def getMovieDetails(link):
                 link[:last_slash_index]
                 + "/reviews?spoiler=hide&sort=curated&dir=asc&ratingFilter=0"
             )
-            post_reviews(api_movie_id, reviews_link)
+            if api_movie_id != 0:
+                post_reviews(api_movie_id, reviews_link)
             print(title, "done")
 
     except Exception as e:
@@ -371,7 +385,8 @@ def getMovieDetails(link):
 
 # Function to scrape IMDb website and extract movie details
 def scrape_imdb():
-    url = "https://www.imdb.com/search/title/?title_type=feature&sort=moviemeter,asc&countries=IN&languages=hi"
+    # url = "https://www.imdb.com/search/title/?title_type=feature&sort=moviemeter,asc&countries=IN&languages=hi"
+    url = "https://www.imdb.com/search/title/?title_type=feature&release_date=2020-01-01,2020-12-31&sort=moviemeter,asc&countries=IN&languages=hi"
 
     response = requests.get(url, headers=headers)
     print(response.status_code)
@@ -405,6 +420,7 @@ def scrape_imdb():
         )
         #  now inside loop
         count = 0
+        # getMovieDetails("/title/tt8110330/?ref_=sr_t_3")
 
         for movie in movie_list:
             count += 1
@@ -412,7 +428,7 @@ def scrape_imdb():
                 "div", class_="sc-43986a27-0 gUQEVh"
             ).div.a["href"]
             # link="https://www.imdb.com/title/tt12393526/"
-            # print(link)
+            print(link)
             getMovieDetails(link)
             # if count > 39:
             # break

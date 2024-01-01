@@ -192,11 +192,15 @@ span.star-cont {
     font-size: 20px;
     text-align: justify;
 }
+.reviewCont {
+    margin: 15px;
+}
 .userProfile {
     width: 40px;
     height: 40px;
     margin-left: 35px;
     margin-right: 20px;
+    margin-top: 13px;
 }
 .userProfile img{
     border-radius: 50%;
@@ -211,14 +215,48 @@ span.star-cont {
 }
 .adduserrev {
     margin: 15px 7px;
-    height: 65px;
-    align-items: center;
+    /* min-height: 65px; */
+    
+    height: max-content;
+}
+.inputRevCont {
+    width: 75%;
 }
 input.revInput {
-    width: 90%;
+    width: 100%;
     border: none;
     outline: none;
-    height: 80%;
+    height: 35px;
     border-bottom: 1px solid;
-    margin-left: 16px;
+    font-size: 16px;
+    background-color: #eeeeee;
+    /* margin-left: 16px; */
+    margin-bottom: 4px;
+    padding-left: 3px;
+}
+textarea.descText {
+    width: 100%;
+    /* height: 117px; */
+    border: none;
+    font-size: 17px;
+    outline: none;
+    background-color: #eee;
+    border-bottom: 0.075rem solid;
+    resize: none;
+}
+.inputRevCont button {
+    border: none;
+    background: #2d77fd;
+    color: white;
+    padding: 7px 14px;
+    margin: 7px;
+    font-size: 23px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.btnCont {
+    /* padding-right: 0px; */
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Navbar from './Navbar';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -29,11 +29,21 @@ const MoviePage = () => {
     production: '',
   });
   const [reviews, setReviews] = useState([]);
+  const [reviewsUser, setReviewsUser] = useState([]);
+  const [profilePic, setProfilePic] = useState(null);
+  const [review, setReview] = useState({
+    oneliner: '',
+    description: '',
+  });
   const [isHovered, setHovered] = useState(false);
   const [favourite, setFavourite] = useState(false);
   const [addToFav, setAddToFav] = useState(false);
   const [fav_id, setFav_id] = useState(null);
   const [genreList, setGenreList] = useState([]);
+  const [textareaHeight, setTextareaHeight] = useState(117);
+  const minTextareaHeight = 18 * 1.5;
+  // const minTextareaHeight = ;
+  const textareaRef = useRef(null);
   const getMovieAndReviews = async () => {
     console.log(uid);
     const movie_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}`;
@@ -41,16 +51,7 @@ const MoviePage = () => {
     const movie_data = response.data;
     setMovie({ ...movie_data });
     setGenreList([...response.data.genre.split(',')]);
-    const review_url_user = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/reviews/`;
-    const reviews_user = await axios.get(review_url_user);
-    console.log(reviews_user.data);
-    setReviews([...reviews_user.data]);
-    const review_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/webreviews/`;
-    const reviews_res = await axios.get(review_url);
-    console.log(reviews_res.status);
-    if (reviews_res.status === 200) {
-      setReviews([...reviews, ...reviews_res.data]);
-    }
+    getReviews();
     if (localStorage.getItem('access').length > 0) {
       const token = localStorage.getItem('access');
       const config = {
@@ -74,6 +75,42 @@ const MoviePage = () => {
       setAddToFav(false);
     }
   };
+  const getReviews = async () => {
+    const review_url_user = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/reviews/`;
+    const reviews_user = await axios.get(review_url_user);
+    console.log(reviews_user.data);
+    setReviewsUser([...reviews_user.data]);
+    const review_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/webreviews/`;
+    const reviews_res = await axios.get(review_url);
+    console.log(reviews_res.status);
+    if (reviews_res.status === 200) {
+      setReviews([...reviews_res.data]);
+    }
+  };
+  const saveReview = async () => {
+    if (review.oneliner.length > 0 && review.description.length > 0) {
+      const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/reviews/`;
+      const review_body = {
+        oneliner: review.oneliner,
+        description: review.description,
+      };
+      const token = localStorage.getItem('access');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${token}`,
+        },
+      };
+      await axios.post(url, review_body, config).then((res) => {
+        console.log(res);
+        getReviews();
+        review.oneliner = '';
+        review.description = '';
+      });
+    } else {
+      alert('empty string');
+    }
+  };
   const convertDate = (input_date) => {
     const options = {
       year: 'numeric',
@@ -87,11 +124,32 @@ const MoviePage = () => {
   const getYear = (date) => {
     return date.toString().substring(0, 4);
   };
+  const getProfilePic = async () => {
+    const token = localStorage.getItem('access');
+    const config = {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    };
+    const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
+    const response = await axios.get(url, config);
+    console.log(response.data.profile_picture);
+    setProfilePic(response.data.profile_picture);
+  };
+  const handleTextareaChange = () => {
+    const currentHeight = textareaRef.current.clientHeight;
+    const scrollHeight = textareaRef.current.scrollHeight;
+    if (scrollHeight > currentHeight) {
+      textareaRef.current.style.height = `${currentHeight + 20}px`; // Adjust the value as needed
+    }
+  };
   useEffect(() => {
     const yOffset = document.getElementById('moviecontainer').offsetTop;
     window.scrollTo(0, yOffset);
     getMovieAndReviews();
+    getProfilePic();
   }, []);
+  // useEffect(()=>{set},[reviews])
 
   const handleFavourite = async () => {
     setAddToFav(true);
@@ -302,22 +360,74 @@ const MoviePage = () => {
         </div>
         <div className='reviewCont'>
           <div className='cont-aa flex-cont'>
-            <div className='reviewCount'>{reviews.length} Reviews</div>
+            <div className='reviewCount'>
+              {reviews.length + reviewsUser.length} Reviews
+            </div>
             <div>Sort Dropdown here </div>
           </div>
           <div className='adduserrev flex-cont'>
             <div className='userProfile'>
               <img
-                src='http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png'
+                src={
+                  profilePic != null
+                    ? profilePic
+                    : 'http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png'
+                }
                 width={'100% '}
                 height={'100%'}
               />
             </div>
             <div className='inputRevCont'>
-              <input className='revInput' placeholder='Add your Review' />
+              <input
+                className='revInput'
+                placeholder='Review in one line'
+                value={review.oneliner}
+                onChange={(e) => {
+                  setReview({ ...review, oneliner: e.target.value });
+                }}
+              />
+              <textarea
+                value={review.description}
+                placeholder='You can describe your review here '
+                onChange={(e) => {
+                  setReview({ ...review, description: e.target.value });
+                  handleTextareaChange();
+                }}
+                onPaste={() => {
+                  setTimeout(() => {
+                    handleTextareaChange();
+                  }, 0);
+                }}
+                ref={textareaRef}
+                style={{
+                  minHeight: `${minTextareaHeight}px`,
+                  // lineHeight: `27px`,
+                  height: 'fit-content',
+                }}
+                className='descText'
+              />
+              <div className='btnCont'>
+                <div className='flex-cont'>
+                  <button
+                    onClick={() => {
+                      setReview({
+                        oneliner: '',
+                        description: '',
+                      });
+                      textareaRef.current.style.height = `${minTextareaHeight}px`;
+                    }}
+                  >
+                    Reset
+                  </button>
+                  <button onClick={saveReview}>Add</button>
+                </div>
+              </div>
             </div>
           </div>
           <div className='showRevs'>
+            {reviewsUser.map((review) => {
+              return <ReviewComp review={review} />;
+            })}
             {reviews.map((review) => {
               return <ReviewComp review={review} />;
             })}
