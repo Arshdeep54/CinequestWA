@@ -149,7 +149,9 @@ const MoviePage = () => {
     getMovieAndReviews();
     getProfilePic();
   }, []);
-  // useEffect(()=>{set},[reviews])
+  useEffect(() => {
+    console.log(reviews);
+  }, [reviews]);
 
   const handleFavourite = async () => {
     setAddToFav(true);

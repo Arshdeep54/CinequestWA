@@ -1,7 +1,26 @@
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
-import React from 'react';
-
+import React, { useState } from 'react';
+import '../cssFiles/Review.css';
+// import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+// import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+// import ThumbUp from '@mui/icons-material/ThumbUp';
 const ReviewComp = ({ review }) => {
+  const likedReviewsId = localStorage.getItem('liked_reviews');
+
+  const [liked, setLiked] = useState();
+  const [disliked, setDisLiked] = useState();
+  const convertDateString = (date) => {
+    const currDate = new Date();
+    console.log(currDate.getUTCFullYear());
+    console.log(currDate.getDay());
+    const dateobj = new Date(date);
+    const year = dateobj.getFullYear();
+    console.log(year);
+    const day = dateobj.getDay();
+    console.log(day);
+  };
+  // convertDateString('2023-12-24');
+
   return (
     <>
       <div className='ReviewCont'>
@@ -22,16 +41,16 @@ const ReviewComp = ({ review }) => {
             <div className='r_oneliner'>{review.oneliner}</div>
             <div className='r_descText'>{review.description}</div>
           </div>
-          <div className='reviewIcons'>
-            <div>
-              <ThumbsUp />
+          {/* <div className='reviewIcons'>
+            <div className='ldBtn'>
+              {liked ? <ThumbUpOutlinedIcon /> : <ThumbUpIcon />}
             </div>
             <div>{review.likes}</div>
-            <div>
+            <div className='ldBtn'>
               <ThumbsDown />
             </div>
             <div>{review.dislikes}</div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
