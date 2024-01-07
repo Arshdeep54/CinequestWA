@@ -42,6 +42,7 @@ const VerifyEmail = () => {
         const response = await axios.post(url, userData, config);
         if (response.status == 200) {
           alert('Otp sent');
+          console.log(response.data);
           setEmailPage(false);
         } else {
           alert('Server Not Responding');
@@ -110,13 +111,21 @@ const VerifyEmail = () => {
         },
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/verify-otp/`;
-      const response = await axios.post(url, userData, config);
-      if (response.status == 200) {
-        alert('email verified');
-        navigate('/auth/profile');
-      } else {
-        alert("OT didn't matched");
-      }
+      await axios
+        .post(url, userData, config)
+        .then((response) => {
+          console.log(response.status, response.data);
+        })
+        .catch((error) => {
+          alert(error.response.data.errors['non_field_errors']);
+        });
+
+      // if (response.status == 200) {
+      //   alert('email verified');
+      //   navigate('/auth/profile');
+      // } else {
+      //   alert("OT didn't matched");
+      // }
     };
     return (
       <>

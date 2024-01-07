@@ -168,6 +168,27 @@ class SendOtpSerializer(serializers.Serializer):
             raise serializers.ValidationError("Not a registered email ")
 
 
+# class OTPverifySerializer(serializers.Serializer):
+#     verification_otp = serializers.IntegerField()
+#     email = serializers.EmailField(max_length=255)
+
+#     class Meta:
+#         fields = ["verification_otp", "email"]
+
+#     def validate(self, attrs):
+#         verification_otp = attrs.get("verification_otp")
+#         email = attrs.get("email")
+#         if UserAccount.objects.filter(email=email).exists():
+#             user = UserAccount.objects.get(email=email)
+#             if verification_otp == user.verification_otp:
+#                 user.email_verified = True
+#                 user.verification_otp = 0
+#                 user.save()
+
+#                 return attrs
+
+
+#         return serializers.ValidationError("OTP didn't matched")
 class OTPverifySerializer(serializers.Serializer):
     verification_otp = serializers.IntegerField()
     email = serializers.EmailField(max_length=255)
@@ -180,14 +201,16 @@ class OTPverifySerializer(serializers.Serializer):
         email = attrs.get("email")
         if UserAccount.objects.filter(email=email).exists():
             user = UserAccount.objects.get(email=email)
+            print(f"Input OTP: {verification_otp}, Stored OTP: {user.verification_otp}")
             if verification_otp == user.verification_otp:
                 user.email_verified = True
                 user.verification_otp = 0
                 user.save()
 
-                return attrs
-
-        return serializers.ValidationError("OTP didn't matched")
+            else:
+                raise serializers.ValidationError("OTP didn't match")
+        else:
+            raise serializers.ValidationError("User not found with the provided email")
 
 
 class SendPasswordResetEmailSerializer(serializers.Serializer):

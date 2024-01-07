@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import '../cssFiles/UserProfile.css';
 import axios from 'axios';
-import { EditIcon, Trash2, X } from 'lucide-react';
+import { EditIcon, SendToBack, Trash2, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 function UserReviews() {
+  const navigate = useNavigate();
   const [userReviews, setUserReviews] = useState([]);
   const [movies, setMovies] = useState([]);
   const [rendered, setRendered] = useState(false);
@@ -15,13 +17,14 @@ function UserReviews() {
     user: ' ',
   });
   const token = localStorage.getItem('access');
+
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+      Authorization: `JWT ${token}`,
+    },
+  };
   const getUserReviews = async () => {
-    const config = {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `JWT ${token}`,
-      },
-    };
     const url = `${process.env.REACT_APP_API_URL}moviesapi/user-reviews/`;
     const response = await axios.get(url, config);
     // console.log(response.data[0]);
@@ -46,19 +49,32 @@ function UserReviews() {
     // console.log(review);
     setReview({ ...review });
   };
-
+  const handleDelete = async (review) => {
+    const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/`;
+    await axios.delete(url, config).then((res) => {
+      console.log(res.data, res.status);
+      if (res.status === 204) {
+        getUserReviews();
+        alert('review deleted');
+      }
+    });
+  };
+  const sendTo = (movie_id) => {
+    navigate(`/movies/${movie_id}`);
+  };
   const handleModalClose = (error) => {
     // Close the modal
     setReviewModal(false);
     getUserReviews();
     error && alert(error);
   };
-  const saveReview = async (review, descModel) => {
+  const saveReview = async (review, descModel, oneliner) => {
     console.log(review);
     console.log(descModel);
 
     const body = {
       description: descModel,
+      oneliner: oneliner,
     };
     const config = {
       headers: {
@@ -76,6 +92,7 @@ function UserReviews() {
   };
   const ReviewModal = ({ isOpen, onClose, review }) => {
     const [descModel, setDescModel] = useState(review.description);
+    const [oneliner, setOneLiner] = useState(review.oneliner);
     // console.log(descModel);
     const movie_id = review.movie;
     // console.log(movie_id);
@@ -111,99 +128,62 @@ function UserReviews() {
           }}
         >
           {/* Modal content */}
-          <div>
+          <div className='crossBtn'>
             <X onClick={onClose} />
           </div>
-          <div>
-            <div>Edit Your Review </div>
-            <div className='leftsecM'>
-              <div className='reviewImgM'>
-                <img
-                  src={
-                    movie
-                      ? movie.poster_link
-                      : 'https://reactjs.org/logo-og.png'
-                  }
-                />
-              </div>
-              <div className='movieNameM'>
-                {movie ? movie.title : 'Movie Title'}
-              </div>
-            </div>
-            <div className='rightsecM'>
-              <div className='rightTopM'>
-                <div className='rightTopLeftM'>
-                  <div className=' textHead'>One Liner </div>
+          <div className='MainModalC'>
+            <div className='modelhead'>Edit Your Review </div>
+            <div className='cont-x'>
+              <div className='leftsecM'>
+                <div className='reviewImgM'>
+                  <img
+                    src={
+                      movie
+                        ? movie.poster_link
+                        : 'https://reactjs.org/logo-og.png'
+                    }
+                  />
+                </div>
+                <div
+                  className='movieNameM cursorP'
+                  onClick={() => sendTo(movie.id)}
+                >
+                  {movie ? movie.title : 'Movie Title'}
                 </div>
               </div>
-              {/* <div className='rightBottom'>{descModel}</div> */}
-              <input
-                type='text'
-                value={descModel}
-                onChange={(e) => {
-                  setDescModel(e.target.value);
-                }}
-              />
+              <div className='rightsecM'>
+                <div className='rightTopM'>
+                  <div className='rightTopLeftM'>
+                    <div className=' textHead'>
+                      <input
+                        value={oneliner}
+                        onChange={(e) => {
+                          setOneLiner(e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {/* <div className='rightBottom'>{descModel}</div> */}
+                <textarea
+                  type='text'
+                  value={descModel}
+                  onChange={(e) => {
+                    setDescModel(e.target.value);
+                  }}
+                />
+              </div>
             </div>
-            <button onClick={() => saveReview(review, descModel)}>
-              Confirm{' '}
-            </button>
+            <div className='btnCont'>
+              <button onClick={() => saveReview(review, descModel, oneliner)}>
+                Confirm{' '}
+              </button>
+            </div>
           </div>
         </div>
       </>
     );
   };
-  // const RenderReviews = userReviews.map((element) => {
-  //   // const movie = {
-  //   //   id: 0,
-  //   //   poster_link: ' ',
-  //   //   title: ' ',
-  //   // };
-  //   const movie_id = element.movie;
-  //   // getMovieById(movie_id).then((res) => {
-  //   //   movie.title = res[0];
-  //   //   movie.poster_link = res[1];
-  //   // });
-  //   // movie.id = movie_id;
-  //   // console.log(movie);
-  //   const movie = movies.filter((movie) => {
-  //     return movie.id == movie_id;
-  //   });
-
-  //   return (
-  //     <>
-  //       <div className='userreview'>
-  //         <div className='leftsec'>
-  //           <div className='reviewImg'>
-  //             <img
-  //               src={
-  //                 // movie[0].poster_link == null
-  //                 //   ? 'https://reactjs.org/logo-og.png'
-  //                 //   :
-  //                 movie[0].poster_link
-  //               }
-  //             />
-  //           </div>
-  //           <div className='movieName'>{movie[0].title}</div>
-  //         </div>
-  //         <div className='rightsec'>
-  //           <div className='rightTop'>
-  //             <div className='rightTopLeft'>
-  //               <div className=' textHead'>One Liner </div>
-  //               <div className='dateReview'>{element.made_at}</div>
-  //             </div>
-
-  //             <div className='rightIcons'>
-  //               <EditIcon onClick={editReview} />
-  //               <Trash2 />
-  //             </div>
-  //           </div>
-  //           <div className='rightBottom'>{element.description}</div>
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // });
 
   return (
     <>
@@ -212,48 +192,55 @@ function UserReviews() {
         {/* <div className='reviewContainer'>{rendered ? RenderReviews : ' '}</div> */}
         <div className='reviewContainer'>
           {rendered ? (
-            userReviews.map((review) => {
-              const movie_id = review.movie;
-              const movie = movies.find((movie) => movie.id === movie_id);
+            userReviews.length > 0 ? (
+              userReviews.map((review) => {
+                const movie_id = review.movie;
+                const movie = movies.find((movie) => movie.id === movie_id);
 
-              return (
-                <>
-                  <div className='userreview'>
-                    <div className='leftsec'>
-                      <div className='reviewImg'>
-                        <img
-                          src={
-                            movie
-                              ? movie.poster_link
-                              : 'https://reactjs.org/logo-og.png'
-                          }
-                          alt={movie ? movie.title : 'Movie Poster'}
-                        />
+                return (
+                  <>
+                    <div className='userreview'>
+                      <div className='leftsec'>
+                        <div className='reviewImg'>
+                          <img
+                            src={
+                              movie
+                                ? movie.poster_link
+                                : 'https://reactjs.org/logo-og.png'
+                            }
+                            alt={movie ? movie.title : 'Movie Poster'}
+                          />
+                        </div>
+                        <div
+                          className='movieName cursorP'
+                          onClick={() => sendTo(movie.id)}
+                        >
+                          {movie ? movie.title : 'Movie Title'}
+                        </div>
                       </div>
-                      <div className='movieName'>
-                        {movie ? movie.title : 'Movie Title'}
-                      </div>
-                    </div>
-                    <div className='rightsec'>
-                      <div className='rightTop'>
-                        <div className='rightTopLeft'>
-                          <div className=' textHead'>One Liner </div>
-                          <div className='dateReview'>
-                            {review.made_at.substring(0, 10)}
+                      <div className='rightsec'>
+                        <div className='rightTop'>
+                          <div className='rightTopLeft'>
+                            <div className=' textHead'>{review.oneliner}</div>
+                            <div className='dateReview'>
+                              {review.made_at.substring(0, 10)}
+                            </div>
+                          </div>
+
+                          <div className='rightIcons'>
+                            <EditIcon onClick={() => editReview(review)} />
+                            <Trash2 onClick={() => handleDelete(review)} />
                           </div>
                         </div>
-
-                        <div className='rightIcons'>
-                          <EditIcon onClick={() => editReview(review)} />
-                          <Trash2 />
-                        </div>
+                        <div className='rightBottom'>{review.description}</div>
                       </div>
-                      <div className='rightBottom'>{review.description}</div>
                     </div>
-                  </div>
-                </>
-              );
-            })
+                  </>
+                );
+              })
+            ) : (
+              <div className='noText'>No Reviews</div>
+            )
           ) : (
             <div>Loading...</div>
           )}

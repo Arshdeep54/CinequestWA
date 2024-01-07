@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Navbar from './Navbar';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Bookmark, Info, PlayCircle, Star } from 'lucide-react';
 import IMDBlogo from '../assets/imdblogo.png';
@@ -10,6 +10,7 @@ import '../cssFiles/MoviePage.css';
 import ReviewComp from './ReviewComp';
 const MoviePage = () => {
   const { uid } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState({
     title: '',
     trailer_link: '',
@@ -52,7 +53,7 @@ const MoviePage = () => {
     setMovie({ ...movie_data });
     setGenreList([...response.data.genre.split(',')]);
     getReviews();
-    if (localStorage.getItem('access').length > 0) {
+    if (localStorage.getItem('access')) {
       const token = localStorage.getItem('access');
       const config = {
         headers: {
@@ -62,17 +63,22 @@ const MoviePage = () => {
       };
       setAddToFav(true);
       const url = `${process.env.REACT_APP_API_URL}moviesapi/user-favourite-movies/`;
-      const fav_movies = await axios.get(url, config);
-      console.log(fav_movies.data);
-      const isFavourite = fav_movies.data.some((movie) => movie.movie === uid);
-      const fav_movie = fav_movies.data.find((movie) => movie.movie === uid);
-      console.log(fav_movie);
-      if (fav_movie) {
-        setFav_id(fav_movie.id);
-      }
-      console.log(isFavourite);
-      setFavourite(isFavourite);
-      setAddToFav(false);
+      await axios.get(url, config).then((fav_movies) => {
+        console.log(fav_movies.data);
+        const isFavourite = fav_movies.data.some(
+          (movie) => parseInt(movie.movie) === parseInt(uid)
+        );
+        const fav_movie = fav_movies.data.find(
+          (movie) => parseInt(movie.movie) === parseInt(uid)
+        );
+        console.log(fav_movie);
+        if (fav_movie) {
+          setFav_id(fav_movie.id);
+        }
+        console.log(isFavourite);
+        setFavourite(isFavourite);
+        setAddToFav(false);
+      });
     }
   };
   const getReviews = async () => {
@@ -88,27 +94,32 @@ const MoviePage = () => {
     }
   };
   const saveReview = async () => {
-    if (review.oneliner.length > 0 && review.description.length > 0) {
-      const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/reviews/`;
-      const review_body = {
-        oneliner: review.oneliner,
-        description: review.description,
-      };
-      const token = localStorage.getItem('access');
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `JWT ${token}`,
-        },
-      };
-      await axios.post(url, review_body, config).then((res) => {
-        console.log(res);
-        getReviews();
-        review.oneliner = '';
-        review.description = '';
-      });
+    const token = localStorage.getItem('access');
+    if (token) {
+      if (review.oneliner.length > 0 && review.description.length > 0) {
+        const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${uid}/reviews/`;
+        const review_body = {
+          oneliner: review.oneliner,
+          description: review.description,
+          userProfile: profilePic,
+        };
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `JWT ${token}`,
+          },
+        };
+        await axios.post(url, review_body, config).then((res) => {
+          console.log(res);
+          getReviews();
+          review.oneliner = '';
+          review.description = '';
+        });
+      } else {
+        alert('empty string');
+      }
     } else {
-      alert('empty string');
+      navigate('/auth/login');
     }
   };
   const convertDate = (input_date) => {
@@ -126,15 +137,17 @@ const MoviePage = () => {
   };
   const getProfilePic = async () => {
     const token = localStorage.getItem('access');
-    const config = {
-      headers: {
-        Authorization: `JWT ${token}`,
-      },
-    };
-    const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
-    const response = await axios.get(url, config);
-    console.log(response.data.profile_picture);
-    setProfilePic(response.data.profile_picture);
+    if (token) {
+      const config = {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      };
+      const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
+      const response = await axios.get(url, config);
+      console.log(response.data.profile_picture);
+      setProfilePic(response.data.profile_picture);
+    }
   };
   const handleTextareaChange = () => {
     const currentHeight = textareaRef.current.clientHeight;
@@ -155,7 +168,7 @@ const MoviePage = () => {
 
   const handleFavourite = async () => {
     setAddToFav(true);
-    if (localStorage.getItem('access').length > 0) {
+    if (localStorage.getItem('access')) {
       const token = localStorage.getItem('access');
       const config = {
         headers: {
@@ -201,6 +214,8 @@ const MoviePage = () => {
             console.log(e);
           });
       }
+    } else {
+      navigate('/auth/login');
     }
     setAddToFav(false);
   };
@@ -373,7 +388,7 @@ const MoviePage = () => {
                 src={
                   profilePic != null
                     ? profilePic
-                    : 'http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png'
+                    : `${process.env.REACT_APP_API_URL}media/profile_images/defaultprofile.png`
                 }
                 width={'100% '}
                 height={'100%'}

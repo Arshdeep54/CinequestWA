@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 function ChangePassword() {
   const navigate = useNavigate();
   const { uid, sent_token } = useParams();
-  console.log(uid, sent_token);
+  // console.log(uid, sent_token);
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const onButtonClick = async () => {
@@ -23,7 +23,8 @@ function ChangePassword() {
       const url = ` ${process.env.REACT_APP_API_URL}auth/user/resetpassword/${uid}/${sent_token}/`;
       const response = await axios.post(url, body, config);
       console.log(response.data);
-      if (response) {
+      if (response.status == 200) {
+        alert('Password Changed');
         navigate('/auth/login');
       }
     } else {
@@ -38,11 +39,12 @@ function ChangePassword() {
           Authorization: `JWT ${token}`,
         },
       };
-      const url = ' ${process.env.REACT_APP_API_URL}auth/user/changepassword/';
+      const url = `${process.env.REACT_APP_API_URL}auth/user/changepassword/`;
       const response = await axios.post(url, body, config);
       console.log(response.data);
-      if (response) {
-        navigate('/auth/login');
+      if (response.status == 200) {
+        alert('Password Changed');
+        navigate('/auth/profile');
       }
     }
 

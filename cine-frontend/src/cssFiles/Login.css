@@ -6,6 +6,7 @@
     justify-content: center;
     /* height: 100vh; */
     padding-top: 60px;
+    background-color: #eee;
   }
   
   .titleloginContainer {
@@ -45,7 +46,8 @@
   
   .inputContainer > .errorLabel {
     color: red;
-    font-size: 12px;
+    font-size: 14px;
+    margin-left: 6px;
   }
   
   .inputBox {

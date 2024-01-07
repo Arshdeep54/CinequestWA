@@ -30,11 +30,12 @@ export default class Navbar extends Component {
         </div>
         <ul className={this.state.menuOpen ? 'open' : 'close'}>
           <li>
-            <NavLink to='/about'>About</NavLink>
+            <NavLink to='/'>Movies</NavLink>
           </li>
           <li>
-            <NavLink to='/services'>Services</NavLink>
+            <NavLink to='/about'>About</NavLink>
           </li>
+
           <li>
             <NavLink to='/contact'>Contact</NavLink>
           </li>

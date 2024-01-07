@@ -1,8 +1,20 @@
-import requests
+import requests, random
 from datetime import datetime
 from bs4 import BeautifulSoup
 import json
 
+pics = [
+    "Java_1.png",
+    "gamer.png",
+    "cat.png",
+    "hacker.png",
+    "man(1).png",
+    "man.png",
+    "woman.png",
+    "profile.png",
+    "profile(1).png",
+    "user.png",
+]
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
     "Content-Type": "application/json",
@@ -143,6 +155,7 @@ def post_reviews(movie_id, reviews_link):
                     "oneliner": one_liner,
                     "description": description,
                     "made_at": made_at,
+                    "userProfile": pics[random.randint(0, 9)],
                 }
                 post_review(review, movie_id)
             print("reviews done ", movie_id)

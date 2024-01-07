@@ -4,15 +4,20 @@ import '../cssFiles/Login.css';
 import axios from 'axios';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FileX } from 'lucide-react';
+import { TailSpin } from 'react-loader-spinner';
 
 function Loginpage() {
   const navigate = useNavigate();
   const [resetScreen, setresetScreen] = useState(false);
+
   const ResetPasswordScreen = () => {
     // console.log('reset');
     const [emailError, setEmailError] = useState('');
     const [email, setEmail] = useState('');
+    const [loggingin, setLoggingin] = useState(false);
+
     const onReset = async () => {
+      setLoggingin(true);
       const userData = {
         email: email,
       };
@@ -22,8 +27,17 @@ function Loginpage() {
         },
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/send-reset-password-email/`;
-      const response = await axios.post(url, userData, config);
-      console.log(response.data);
+      await axios
+        .post(url, userData, config)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors['non_field_errors']);
+          const error_message = error.response.data.errors['non_field_errors'];
+          alert(error_message);
+        });
+      setLoggingin(false);
     };
     return (
       <>
@@ -63,7 +77,20 @@ function Loginpage() {
               className='linktext'
               onClick={() => setresetScreen(!resetScreen)}
             >
-              Login
+              {loggingin ? (
+                <TailSpin
+                  visible={true}
+                  height='25'
+                  width='25'
+                  color='#4fa94d'
+                  ariaLabel='tail-spin-loading'
+                  radius='1'
+                  wrapperStyle={{}}
+                  wrapperClass=''
+                />
+              ) : (
+                <>Login</>
+              )}
             </div>
           </div>
         </div>
@@ -75,8 +102,9 @@ function Loginpage() {
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
-
+    const [loggingin, setLoggingin] = useState(false);
     const onButtonClick = async () => {
+      setLoggingin(true);
       const userData = {
         email: email,
         password: password,
@@ -87,16 +115,25 @@ function Loginpage() {
         },
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/login/`;
-      const response = await axios.post(url, userData, config);
-      console.log(response.data);
-      console.log(response.data['msg']);
-      console.log(response.data['token']['access']);
-      if (response.data['token']) {
-        localStorage.setItem('access', response.data['token']['access']);
-        localStorage.setItem('refresh', response.data['token']['refresh']);
-        navigate('/');
-      }
-
+      await axios
+        .post(url, userData, config)
+        .then((response) => {
+          console.log(response.data);
+          console.log(response.data['msg']);
+          console.log(response.data['token']['access']);
+          if (response.data['token']) {
+            localStorage.setItem('access', response.data['token']['access']);
+            localStorage.setItem('refresh', response.data['token']['refresh']);
+            navigate('/');
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors['non_field_errors']);
+          const error_message = error.response.data.errors['non_field_errors'];
+          setPasswordError(error_message);
+          // alert(error_message);
+        });
+      setLoggingin(false);
       // navigate("/");
     };
     return (
@@ -127,12 +164,27 @@ function Loginpage() {
           </div>
           <br />
           <div className={'inputContainer'}>
-            <input
-              className={'inputButton'}
-              type='button'
-              onClick={onButtonClick}
-              value={'Log in'}
-            />
+            {loggingin ? (
+              <TailSpin
+                visible={true}
+                height='25'
+                width='25'
+                color='#4fa94d'
+                ariaLabel='tail-spin-loading'
+                radius='1'
+                wrapperStyle={{}}
+                wrapperClass=''
+              />
+            ) : (
+              <>
+                <input
+                  className={'inputButton'}
+                  type='button'
+                  onClick={onButtonClick}
+                  value={'Log in'}
+                />
+              </>
+            )}
           </div>
           <div
             className='textforgot'

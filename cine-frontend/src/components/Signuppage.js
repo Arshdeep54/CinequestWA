@@ -24,15 +24,29 @@ function Signuppage() {
       },
     };
     const url = `${process.env.REACT_APP_API_URL}auth/user/register/`;
-    const response = await axios.post(url, userData, config);
-    console.log(response.data);
-    console.log(response.data['msg']);
-    console.log(response.data['token']['access']);
-    if (response.data['token']) {
-      localStorage.setItem('access', response.data['token']['access']);
-      localStorage.setItem('refresh', response.data['token']['refresh']);
-      navigate('/');
-    }
+    await axios
+      .post(url, userData, config)
+      .then((response) => {
+        console.log(response.data);
+        console.log(response.data['msg']);
+        console.log(response.data['token']['access']);
+        if (response.data['token']) {
+          localStorage.setItem('access', response.data['token']['access']);
+          localStorage.setItem('refresh', response.data['token']['refresh']);
+          navigate('/');
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data.errors['email']);
+        console.log(error.response.data.errors);
+        const error_message = error.response.data.errors;
+        if (error_message['email']) {
+          setPasswordError(error_message['email']);
+        } else {
+          setPasswordError(error_message['non_field_errors']);
+        }
+        // alert(error_message);
+      });
 
     // navigate("/");
   };
@@ -72,7 +86,6 @@ function Signuppage() {
             onChange={(ev) => setPassword(ev.target.value)}
             className={'inputBox'}
           />
-          <label className='errorLabel'>{passwordError}</label>
         </div>
         <br />
         <div className={'inputContainer'}>
@@ -95,7 +108,7 @@ function Signuppage() {
         </div>
         <div className='texttosignup'>
           <text>Already have an account </text>
-          <Link to='/login'>Log In</Link>
+          <Link to='/auth/login'>Log In</Link>
         </div>
       </div>
     </>

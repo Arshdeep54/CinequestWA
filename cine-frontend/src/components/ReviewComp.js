@@ -27,7 +27,9 @@ const ReviewComp = ({ review }) => {
         <div className='reviewLeft'>
           <img
             src={
-              'http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png'
+              review.userProfile.length > 10
+                ? review.userProfile
+                : `${process.env.REACT_APP_API_URL}media/profile_images/${review.userProfile}`
             }
             alt='userProfilePic'
           />

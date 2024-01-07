@@ -5,9 +5,10 @@ import axios from 'axios';
 import '../cssFiles/UserProfile.css';
 import { Navigate, useNavigate } from 'react-router-dom';
 import UserReviews from './UserReviews';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+
 import { ShieldAlert } from 'lucide-react';
+import UserFavs from './UserFavs';
+import { TailSpin } from 'react-loader-spinner';
 // import Userinfo from './Userinfo';
 function Userprofile() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ function Userprofile() {
     aboutmovielife: '',
   });
   const [profile_picture, setProfilePicture] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [profile_toShow, setProfileToShow] = useState(null);
   const getuserData = async () => {
     const token = localStorage.getItem('access');
@@ -60,6 +62,7 @@ function Userprofile() {
   var date =
     today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
   const handleSave = async () => {
+    setSaving(true);
     const token = localStorage.getItem('access');
     const config = {
       headers: {
@@ -95,6 +98,7 @@ function Userprofile() {
       document.getElementById('image').value = '';
       getuserData();
     }
+    setSaving(false);
   };
   const Logout = () => {
     localStorage.clear();
@@ -130,7 +134,7 @@ function Userprofile() {
                       src={
                         profile_toShow
                           ? profile_toShow
-                          : ' ${process.env.REACT_APP_API_URL}media/profile_images/defaultprofile.png'
+                          : `${process.env.REACT_APP_API_URL}media/profile_images/defaultprofile.png`
                       }
                       alt='React Image'
                     />
@@ -250,11 +254,13 @@ function Userprofile() {
                       <input
                         name='inputInfo'
                         type='text'
-                        value={userProfile.mobile}
+                        value={
+                          userProfile.mobile === 0 ? '' : userProfile.mobile
+                        }
                         onChange={(e) => {
                           setUserProfile({
                             ...userProfile,
-                            mobile: e.target.value,
+                            mobile: e.target.value === '' ? 0 : e.target.value,
                           });
                         }}
                         className='inputboxUser'
@@ -281,11 +287,25 @@ function Userprofile() {
           </div>
           <div className='Savediv'>
             <button className='savebtn' onClick={handleSave}>
-              Save
+              {saving ? (
+                <TailSpin
+                  visible={true}
+                  height='25'
+                  width='25'
+                  color='#4fa94d'
+                  ariaLabel='tail-spin-loading'
+                  radius='1'
+                  wrapperStyle={{}}
+                  wrapperClass=''
+                />
+              ) : (
+                <>Save</>
+              )}
             </button>
           </div>
           <UserReviews />
-          <div className='userFavMovies' id='favourites'></div>
+          <UserFavs />
+
           <div className='userAccinfo' id='accSettings'>
             <button className='savebtn' onClick={Logout}>
               Log out
