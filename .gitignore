@@ -4,4 +4,5 @@ cine-frontend/node_modules
 
 cineBackend/backenddjango/.env
 
+cine-frontend/.env
 
