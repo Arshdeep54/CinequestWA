@@ -1,8 +1,10 @@
-#CineQuest-IMG
+# CineQuest-IMG
 
 ## Project Overview
 
 This project is a combination of a React frontend and a Django backend. This is a movies website where a user or movie critic can create an account and can see or post his own reviews for a movie .
+
+You can view the frontend over https://arshdeep54.github.io/cinequest/ 
 
 Some Developer Side features to this project are :-
 - User Authentication
@@ -30,13 +32,8 @@ Some Developer Side features to this project are :-
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Backend (Django)](#backend-django)
-  - [Project Structure](#project-structure)
-  - [Configuration](#configuration)
-- [Frontend (React)](#frontend-react)
-  - [Folder Structure](#folder-structure)
-  - [Installation](#installation-frontend)
 - [Usage](#usage)
+- [Development](#development)
 
 
 
@@ -102,3 +99,9 @@ python manage.py runserver
 # Navigate to the frontend directory and start React development server
 cd frontend
 npm start
+```
+Frontend is deployed on github pages on repo https://github.com/Arshdeep54/cinequest .
+
+Backend is deployed on Python Anywhere and repo  https://github.com/Arshdeep54/cinebackend
+
+
