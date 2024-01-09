@@ -12,7 +12,7 @@ function ContactPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '100vh',
+          height: '93vh',
           backgroundColor: '#f0f0f0',
           color: '#333',
         }}

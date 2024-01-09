@@ -260,3 +260,42 @@ textarea.descText {
     align-items: flex-end;
     flex-direction: column;
 }
+@media only screen and (max-width: 767px) {
+    .middleCont{
+        flex-direction: column;
+        padding-left: 4px;
+    }
+    .MovieContainer {
+        padding: 5px;
+    }
+    .topCont {
+        justify-content: space-between;
+        padding: 0 7px
+    }
+    .topCont-right {
+        padding-right: 4px;
+    }
+
+    .imageCont {
+        width: 217px;
+        height: 320px;
+    }
+    .cont-a{
+        padding-right: 7px;
+    }
+    
+
+    .adduserrev {
+        margin: 15px 0px;
+    }
+    .userProfile{
+        margin-left: 5%;
+    }
+    .reviewCont {
+        margin: 10px;
+    }
+.middleCont-right {
+    margin: 17px 0px;
+}
+
+}

@@ -73,3 +73,15 @@
   color: blue;
   cursor: pointer;
 }
+@media only screen and (max-width: 767px) {
+.titlechangeContainer{
+  font-size: 25px;
+}
+.inputBox{
+  width: 319px;
+}
+.mainloginContainer{
+  height: 100vh;
+  padding-top: 0px;
+}
+}

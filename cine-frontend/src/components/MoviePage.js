@@ -380,7 +380,7 @@ const MoviePage = () => {
             <div className='reviewCount'>
               {reviews.length + reviewsUser.length} Reviews
             </div>
-            <div>Sort Dropdown here </div>
+            {/* <div>Sort Dropdown here </div> */}
           </div>
           <div className='adduserrev flex-cont'>
             <div className='userProfile'>

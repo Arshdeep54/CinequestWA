@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const LatestMovies = ({ orderBy }) => {
   const [latestMovies, setLatestMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const moviesPerPage = 6;
+  const moviesPerPage = window.matchMedia('(max-width:767px)').matches ? 4 : 6;
   const [ifhoveredp, setIfHoveredp] = useState(false);
   const [ifhoveredn, setIfHoveredn] = useState(false);
   const startIndex = (currentPage - 1) * moviesPerPage;

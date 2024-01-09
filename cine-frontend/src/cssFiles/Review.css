@@ -48,3 +48,8 @@
     margin-right: 3px;
 }
 
+@media only screen and (max-width: 767px) {
+    .reviewLeft{
+        margin-left: 8px;
+    }
+}

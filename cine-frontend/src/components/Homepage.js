@@ -281,9 +281,9 @@ function Homepage() {
               <option value={'fantacy'}>Fantacy</option>
             </select>
           </div>
-          <div className='filterBox'>
-            {/* <label className='selectlabel'>Available On</label> */}
-            {/* <select
+          {/* <div className='filterBox'> */}
+          {/* <label className='selectlabel'>Available On</label> */}
+          {/* <select
               className='selectF'
               value={platformFilter}
               disabled={!filtersActive}
@@ -294,9 +294,9 @@ function Homepage() {
               <option value={'amazonprime'}>Amazon prime</option>
               <option value={'Youtube'}>Youtube</option>
             </select> */}
-            {/* </div>
+          {/* </div>
             </div> */}
-          </div>
+          {/* </div> */}
         </div>
         <div className='MovieCont'>
           {/* if no search and filters just show all the movies in differnet sections Latest popular best of 2023*/}

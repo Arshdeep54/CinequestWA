@@ -261,6 +261,7 @@ flex-direction: column;
     height:500px;
     background-color:white;
     border-radius: 30px;
+    margin-bottom: 6px;
 }
 .crossBtn {
     display: flex;
@@ -328,11 +329,7 @@ flex-direction: column;
 .cursorP{
     cursor: pointer;
 } 
-.movie-grid{
-    display: grid;
-      grid-template-columns: repeat(5,1fr);
-      gap: 10px;
-}
+
 .movie-card-fav {
     position: relative;
     overflow: hidden;
@@ -383,4 +380,62 @@ display: grid;
 margin: 5px 38px;
 grid-template-columns: repeat(4,1fr);
 gap: 10px;
+}
+@media only screen and (max-width: 767px) {
+    .userInfo .upper {
+        flex-direction: column;
+    }
+    .leftLinksSection{
+        display: none;
+    }
+    .userInfo{
+        width: 100%;
+        height: 679px;
+    }
+    
+
+    .userInfo .upper .upperright {
+        width: 100%;
+        margin-left: 12px;
+    }
+    .userInfo .upper .upperleft {
+        width: 78%;
+    }
+    .Savediv {
+        width: 100%;
+    }
+    .userReviews {
+                
+        width: 100%;
+    }            
+    .cont-x{
+        flex-direction: column;
+    }
+    .textPersonalInfo{
+        padding-left: 17px;
+    }
+    .reviewImg{
+        min-width: 158px;
+    }
+    .leftsec{
+        min-width: 164px;
+    }
+    .userFavMovies{
+        width: 100%;
+    }
+    .movie-grid-fav{
+        margin: 5px 9px;
+        grid-template-columns: repeat(2,1fr);
+    }
+    .movie-card-fav{
+        width: 158px;
+        height: 239px;
+    }
+    .userAccinfo{
+        width: 100%;
+        height: 55px;
+    }
+    .rightsecM textarea {
+        width: 100%;
+    }
 }

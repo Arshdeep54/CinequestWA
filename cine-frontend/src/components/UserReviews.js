@@ -117,9 +117,13 @@ function UserReviews() {
             display: isOpen ? 'block' : 'none',
             position: 'fixed',
             top: '50%',
-            left: '50%',
+            left: window.matchMedia('(max-width:767px)').matches
+              ? '30%'
+              : '50%',
             transform: 'translate(-50%, -50%)',
-            width: '680px',
+            width: window.matchMedia('(max-width:767px)').matches
+              ? '51%'
+              : '687px',
             backgroundColor: '#fff',
             padding: '15px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
