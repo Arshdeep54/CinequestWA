@@ -8,6 +8,7 @@ from .views import (
     UserResetPasswordView,
     SendOtpView,
     VerifyOtpView,
+    google_authenticate,
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
         UserResetPasswordView.as_view(),
         name="resetpassword",
     ),
+    # path("google-authenticate/", google_authenticate, name="google_authenticate"),
 ]

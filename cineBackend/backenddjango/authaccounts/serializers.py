@@ -43,6 +43,8 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
     email = serializers.CharField(max_length=255)
 
+class GoogleAuthSerializer(serializers.Serializer):
+    id_token = serializers.CharField(write_only=True)
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

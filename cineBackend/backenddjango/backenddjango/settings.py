@@ -198,3 +198,8 @@ CORS_ALLOWED_ORIGINS = [
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = (
+    "192600003457-qtlvpsbiuohbfocs3nrdo1th32gog1gp.apps.googleusercontent.com",
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"

@@ -12,7 +12,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Movie, Review, ReviewFromWeb, FavouriteMovie
+from rest_framework.decorators import action
+from .models import Movie, Review, ReviewFromWeb, FavouriteMovie, Like, Dislike
 from .serializers import (
     MovieSerializer,
     ReviewSerializer,
@@ -82,6 +83,44 @@ class ReviewList(ListCreateAPIView):
         movie_id = self.kwargs["movie_id"]
         movie = Movie.objects.get(id=movie_id)
         serializer.save(user=user, movie=movie)
+
+    def post(self, request, *args, **kwargs):
+        if "/like/" in self.request.path:
+            return self.like(request, *args, **kwargs)
+        elif "/dislike/" in self.request.path:
+            return self.dislike(request, *args, **kwargs)
+        else:
+            return super().post(request, *args, **kwargs)
+
+    def like(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+
+        if not Like.objects.filter(user=user, review=review).exists():
+            Like.objects.create(user=user, review=review)
+            review.likes += 1
+            review.save()
+            return Response({"detail": "Review liked successfully"})
+        else:
+            return Response(
+                {"detail": "Review is already liked by this user"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def dislike(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+
+        if not Dislike.objects.filter(user=user, review=review).exists():
+            Dislike.objects.create(user=user, review=review)
+            review.dislikes += 1
+            review.save()
+            return Response({"detail": "Review disliked successfully"})
+        else:
+            return Response(
+                {"detail": "Review is already disliked by this user"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class ReviewDetails(RetrieveUpdateDestroyAPIView):

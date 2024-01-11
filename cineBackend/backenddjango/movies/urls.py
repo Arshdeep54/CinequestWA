@@ -31,4 +31,14 @@ urlpatterns = [
         views.UserFavMovieDetailView.as_view(),
         name="favorite-movie-detail",
     ),
+    path(
+        "movies/<int:movie_id>/reviews/<int:pk>/like/",
+        views.ReviewList.as_view(),
+        name="review-like",
+    ),
+    path(
+        "movies/<int:movie_id>/reviews/<int:pk>/dislike/",
+        views.ReviewList.as_view(),
+        name="review-dislike",
+    ),
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.generics import (
     UpdateAPIView,
@@ -23,6 +23,9 @@ from .renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import authenticate, login
+from .serializers import GoogleAuthSerializer
 
 
 # Create your views here.
@@ -76,6 +79,28 @@ class UserLoginView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def google_authenticate(request):
+    serializer = GoogleAuthSerializer(data=request.data)
+    if serializer.is_valid():
+        id_token = serializer.validated_data["id_token"]
+        user = authenticate(request, id_token=id_token)
+
+        if user:
+            login(request, user)
+            # You can customize the response based on your needs
+            return Response(
+                {"message": "Authentication successful"}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileView(RetrieveUpdateAPIView):

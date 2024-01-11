@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import '../cssFiles/Login.css';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import GoogleAuth from './GoogleAuth';
 function Signuppage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -106,6 +107,9 @@ function Signuppage() {
             value={'Sign Up'}
           />
         </div>
+        {/* <div>
+          <GoogleAuth />
+        </div> */}
         <div className='texttosignup'>
           <text>Already have an account </text>
           <Link to='/auth/login'>Log In</Link>
