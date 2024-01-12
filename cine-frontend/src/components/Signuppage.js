@@ -82,6 +82,7 @@ function Signuppage() {
         <br />
         <div className={'inputContainer'}>
           <input
+          type="password"
             value={password}
             placeholder='Enter your password here'
             onChange={(ev) => setPassword(ev.target.value)}
@@ -91,6 +92,7 @@ function Signuppage() {
         <br />
         <div className={'inputContainer'}>
           <input
+          type='password'
             value={confirmpassword}
             placeholder='Confirm the password'
             onChange={(ev) => setConfirmPassword(ev.target.value)}

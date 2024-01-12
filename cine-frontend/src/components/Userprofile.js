@@ -307,15 +307,13 @@ function Userprofile() {
           <UserFavs />
 
           <div className='userAccinfo' id='accSettings'>
+            <div className='textPersonalInfo'>Account Settings </div>
             <button className='savebtn' onClick={Logout}>
               Log out
             </button>
             <button className='savebtn' onClick={changePassword}>
               Change password
             </button>
-            {/* <button className='savebtn' onClick={verifyEmail}>
-              Verify email
-            </button> */}
           </div>
         </div>
       </div>

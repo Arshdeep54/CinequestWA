@@ -41,4 +41,25 @@ urlpatterns = [
         views.ReviewList.as_view(),
         name="review-dislike",
     ),
+    path(
+        "movies/<int:movie_id>/reviews/<int:pk>/unlike/",
+        views.ReviewList.as_view(),
+        name="review-unlike",
+    ),
+    path(
+        "movies/<int:movie_id>/reviews/<int:pk>/undislike/",
+        views.ReviewList.as_view(),
+        name="review-undislike",
+    ),
+    path("liked-reviews/", views.LikedReviewList.as_view(), name="liked-review-list"),
+    path(
+        "disliked-reviews/",
+        views.DisLikedReviewList.as_view(),
+        name="disliked-review-list",
+    ),
+    path(
+        "movies/<int:movie_id>/reviews/<int:review_id>/replies/",
+        views.ReplyListCreateView.as_view(),
+        name="reply-list-create",
+    ),
 ]

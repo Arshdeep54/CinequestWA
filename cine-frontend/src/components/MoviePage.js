@@ -29,6 +29,7 @@ const MoviePage = () => {
     starcast: '',
     production: '',
   });
+  const [rendering, setRendering] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewsUser, setReviewsUser] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
@@ -161,6 +162,7 @@ const MoviePage = () => {
     window.scrollTo(0, yOffset);
     getMovieAndReviews();
     getProfilePic();
+    setRendering(true);
   }, []);
   useEffect(() => {
     console.log(reviews);
@@ -443,10 +445,22 @@ const MoviePage = () => {
           </div>
           <div className='showRevs'>
             {reviewsUser.map((review) => {
-              return <ReviewComp review={review} />;
+              return (
+                <ReviewComp
+                  review={review}
+                  from={'authUsers'}
+                  // profilepic={profilePic}
+                />
+              );
             })}
             {reviews.map((review) => {
-              return <ReviewComp review={review} />;
+              return (
+                <ReviewComp
+                  review={review}
+                  from={'webUsers'}
+                  // profilepic={profilePic}
+                />
+              );
             })}
           </div>
         </div>

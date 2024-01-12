@@ -11,14 +11,17 @@ from rest_framework.generics import (
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
-from .models import Movie, Review, ReviewFromWeb, FavouriteMovie, Like, Dislike
+from .models import Movie, Review, ReviewFromWeb, FavouriteMovie, Like, Dislike, Reply
 from .serializers import (
     MovieSerializer,
     ReviewSerializer,
     WebReviewSerializer,
     FavoriteMovieSerializer,
+    LikedReviewSerializer,
+    ReplySerializer,
 )
 from .filters import MovieFilter
 
@@ -89,12 +92,24 @@ class ReviewList(ListCreateAPIView):
             return self.like(request, *args, **kwargs)
         elif "/dislike/" in self.request.path:
             return self.dislike(request, *args, **kwargs)
+        elif "/unlike/" in self.request.path:
+            return self.unlike(request, *args, **kwargs)
+        elif "/undislike/" in self.request.path:
+            return self.undislike(request, *args, **kwargs)
         else:
             return super().post(request, *args, **kwargs)
 
     def like(self, request, *args, **kwargs):
         review = self.get_object()
         user = request.user
+        if Dislike.objects.filter(user=user, review=review).exists():
+            return Response(
+                {
+                    "detail": "Cannot like a review that is already disliked",
+                    "oppexists": 1,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not Like.objects.filter(user=user, review=review).exists():
             Like.objects.create(user=user, review=review)
@@ -110,6 +125,14 @@ class ReviewList(ListCreateAPIView):
     def dislike(self, request, *args, **kwargs):
         review = self.get_object()
         user = request.user
+        if Like.objects.filter(user=user, review=review).exists():
+            return Response(
+                {
+                    "detail": "Cannot dislike a review that is already liked",
+                    "oppexists": 1,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not Dislike.objects.filter(user=user, review=review).exists():
             Dislike.objects.create(user=user, review=review)
@@ -119,6 +142,40 @@ class ReviewList(ListCreateAPIView):
         else:
             return Response(
                 {"detail": "Review is already disliked by this user"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def unlike(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+
+        # Check if the user has already liked this review
+        like_record = Like.objects.filter(user=user, review=review).first()
+        if like_record:
+            like_record.delete()
+            review.likes -= 1
+            review.save()
+            return Response({"detail": "Review unliked successfully"})
+        else:
+            return Response(
+                {"detail": "User has not liked this review"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def undislike(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+
+        # Check if the user has already disliked this review
+        dislike_record = Dislike.objects.filter(user=user, review=review).first()
+        if dislike_record:
+            dislike_record.delete()
+            review.dislikes -= 1
+            review.save()
+            return Response({"detail": "Review undisliked successfully"})
+        else:
+            return Response(
+                {"detail": "User has not disliked this review"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -182,3 +239,47 @@ class UserFavMovieDetailView(RetrieveUpdateDestroyAPIView):
     #     instance = self.get_object()
     #     self.perform_destroy(instance)
     #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LikedReviewList(ListAPIView):
+    serializer_class = LikedReviewSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        liked_reviews = Like.objects.filter(user=user).values_list("review", flat=True)
+        return Review.objects.filter(pk__in=liked_reviews)
+
+
+class DisLikedReviewList(ListAPIView):
+    serializer_class = LikedReviewSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        disliked_reviews = Dislike.objects.filter(user=user).values_list(
+            "review", flat=True
+        )
+        return Review.objects.filter(pk__in=disliked_reviews)
+
+
+# views.py
+from rest_framework import generics, permissions
+
+
+class ReplyListCreateView(generics.ListCreateAPIView):
+    serializer_class = ReplySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        review_id = self.kwargs.get("review_id")
+        return Reply.objects.filter(review__id=review_id)
+
+    def perform_create(self, serializer):
+        if not self.request.user.is_authenticated:
+            raise permissions.NotAuthenticated(
+                "Authentication is required to create a reply."
+            )
+
+        user = self.request.user
+        review_id = self.kwargs.get("review_id")
+        review = get_object_or_404(Review, id=review_id)
+        serializer.save(user=user, review=review)

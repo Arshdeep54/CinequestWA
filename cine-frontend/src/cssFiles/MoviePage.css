@@ -288,6 +288,9 @@ textarea.descText {
     .adduserrev {
         margin: 15px 0px;
     }
+    .showRevs {
+        padding-right: 71px;
+    }
     .userProfile{
         margin-left: 5%;
     }

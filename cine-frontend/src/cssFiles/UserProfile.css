@@ -258,10 +258,10 @@ flex-direction: column;
 .userAccinfo{
     margin-top: 50px;
     width:1000px;
-    height:500px;
+    height: 100px;
     background-color:white;
     border-radius: 30px;
-    margin-bottom: 6px;
+    margin-bottom: 17px;
 }
 .crossBtn {
     display: flex;
