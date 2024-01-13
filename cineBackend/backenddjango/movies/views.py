@@ -7,21 +7,36 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveUpdateDestroyAPIView,
     CreateAPIView,
+    DestroyAPIView,
 )
+from itertools import chain
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
-from .models import Movie, Review, ReviewFromWeb, FavouriteMovie, Like, Dislike, Reply
+from .models import (
+    Movie,
+    Review,
+    ReviewFromWeb,
+    FavouriteMovie,
+    Like,
+    Dislike,
+    Reply,
+    LikeWeb,
+    DislikeWeb,
+    ReplyWeb,
+)
 from .serializers import (
     MovieSerializer,
     ReviewSerializer,
     WebReviewSerializer,
     FavoriteMovieSerializer,
     LikedReviewSerializer,
+    LikedWebReviewSerializer,
     ReplySerializer,
+    ReplyWebSerializer,
 )
 from .filters import MovieFilter
 
@@ -197,6 +212,118 @@ class WebReviewList(ListCreateAPIView):
         movie = Movie.objects.get(id=movie_id)
         serializer.save(movie=movie)
 
+    def post(self, request, *args, **kwargs):
+        if "/like/" in self.request.path:
+            if not request.user.is_authenticated:
+                return Response(
+                    {"detail": "Authentication is required to like a review."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            return self.like(request, *args, **kwargs)
+        elif "/dislike/" in self.request.path:
+            if not request.user.is_authenticated:
+                return Response(
+                    {"detail": "Authentication is required to like a review."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            return self.dislike(request, *args, **kwargs)
+        elif "/unlike/" in self.request.path:
+            if not request.user.is_authenticated:
+                return Response(
+                    {"detail": "Authentication is required to like a review."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            return self.unlike(request, *args, **kwargs)
+        elif "/undislike/" in self.request.path:
+            if not request.user.is_authenticated:
+                return Response(
+                    {"detail": "Authentication is required to like a review."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            return self.undislike(request, *args, **kwargs)
+        else:
+            return super().post(request, *args, **kwargs)
+
+    def like(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+        if DislikeWeb.objects.filter(user=user, review=review).exists():
+            return Response(
+                {
+                    "detail": "Cannot like a review that is already disliked",
+                    "oppexists": 1,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not LikeWeb.objects.filter(user=user, review=review).exists():
+            LikeWeb.objects.create(user=user, review=review)
+            review.likes += 1
+            review.save()
+            return Response({"detail": "Review liked successfully"})
+        else:
+            return Response(
+                {"detail": "Review is already liked by this user"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def dislike(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+        if LikeWeb.objects.filter(user=user, review=review).exists():
+            return Response(
+                {
+                    "detail": "Cannot dislike a review that is already liked",
+                    "oppexists": 1,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not DislikeWeb.objects.filter(user=user, review=review).exists():
+            DislikeWeb.objects.create(user=user, review=review)
+            review.dislikes += 1
+            review.save()
+            return Response({"detail": "Review disliked successfully"})
+        else:
+            return Response(
+                {"detail": "Review is already disliked by this user"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def unlike(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+
+        # Check if the user has already liked this review
+        like_record = LikeWeb.objects.filter(user=user, review=review).first()
+        if like_record:
+            like_record.delete()
+            review.likes -= 1
+            review.save()
+            return Response({"detail": "Review unliked successfully"})
+        else:
+            return Response(
+                {"detail": "User has not liked this review"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def undislike(self, request, *args, **kwargs):
+        review = self.get_object()
+        user = request.user
+
+        # Check if the user has already disliked this review
+        dislike_record = DislikeWeb.objects.filter(user=user, review=review).first()
+        if dislike_record:
+            dislike_record.delete()
+            review.dislikes -= 1
+            review.save()
+            return Response({"detail": "Review undisliked successfully"})
+        else:
+            return Response(
+                {"detail": "User has not disliked this review"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
 
 class WebReviewDetails(RetrieveUpdateDestroyAPIView):
     queryset = ReviewFromWeb.objects.all()
@@ -261,11 +388,29 @@ class DisLikedReviewList(ListAPIView):
         return Review.objects.filter(pk__in=disliked_reviews)
 
 
-# views.py
-from rest_framework import generics, permissions
+class LikedWebReviewList(ListAPIView):
+    serializer_class = LikedWebReviewSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        liked_reviews = LikeWeb.objects.filter(user=user).values_list(
+            "review", flat=True
+        )
+        return ReviewFromWeb.objects.filter(pk__in=liked_reviews)
 
 
-class ReplyListCreateView(generics.ListCreateAPIView):
+class DisLikedWebReviewList(ListAPIView):
+    serializer_class = LikedWebReviewSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        disliked_reviews = DislikeWeb.objects.filter(user=user).values_list(
+            "review", flat=True
+        )
+        return ReviewFromWeb.objects.filter(pk__in=disliked_reviews)
+
+
+class ReplyListCreateView(ListCreateAPIView):
     serializer_class = ReplySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -283,3 +428,71 @@ class ReplyListCreateView(generics.ListCreateAPIView):
         review_id = self.kwargs.get("review_id")
         review = get_object_or_404(Review, id=review_id)
         serializer.save(user=user, review=review)
+
+
+class ReplyDeleteView(DestroyAPIView):
+    queryset = Reply.objects.all()
+    serializer_class = ReplySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        review_id = self.kwargs.get("review_id")
+        reply_id = self.kwargs.get("pk")
+        reply = get_object_or_404(Reply, id=reply_id, review__id=review_id)
+        if reply.user != self.request.user:
+            raise permissions.PermissionDenied(
+                "You do not have permission to delete this reply."
+            )
+        return reply
+
+
+class ReplyWebListCreateView(ListCreateAPIView):
+    serializer_class = ReplyWebSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        review_id = self.kwargs.get("review_id")
+        return ReplyWeb.objects.filter(review__id=review_id)
+
+    def perform_create(self, serializer):
+        if not self.request.user.is_authenticated:
+            raise permissions.NotAuthenticated(
+                "Authentication is required to create a reply."
+            )
+
+        user = self.request.user
+        review_id = self.kwargs.get("review_id")
+        review = get_object_or_404(ReviewFromWeb, id=review_id)
+        serializer.save(user=user, review=review)
+
+
+class ReplyWebDeleteView(DestroyAPIView):
+    queryset = ReplyWeb.objects.all()
+    serializer_class = ReplyWebSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        review_id = self.kwargs.get("review_id")
+        reply_id = self.kwargs.get("pk")
+        reply = get_object_or_404(ReplyWeb, id=reply_id, review__id=review_id)
+        if reply.user != self.request.user:
+            raise permissions.PermissionDenied(
+                "You do not have permission to delete this reply."
+            )
+        return reply
+
+
+class UserRepliesListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.query_params.get("reply_type") == "web":
+            return ReplyWebSerializer
+        else:
+            return ReplySerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        replies_model = Reply.objects.filter(user=user)
+        replies_web_model = ReplyWeb.objects.filter(user=user)
+        return replies_model.union(replies_web_model)

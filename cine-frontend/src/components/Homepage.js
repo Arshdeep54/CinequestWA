@@ -157,7 +157,11 @@ function Homepage() {
     genreFilter,
   ]);
   useEffect(() => {
-    getAllMovies();
+    if (searchFilter.length == 0) {
+      getAllMovies();
+    } else {
+      getSearchedMovie();
+    }
     const handleShortcut = (event) => {
       if (event.ctrlKey && event.key === 'm') {
         searchInputRef.current.focus();
@@ -243,6 +247,10 @@ function Homepage() {
               <option value={'Hindi'}>Hindi</option>
               <option value={'Punjabi'}>Punjabi</option>
               <option value={'English'}>English</option>
+              <option value={'Tamil'}>Tamil</option>
+              <option value={'Telugu'}>Telugu</option>
+              <option value={'Gujarati'}>Gujarati</option>
+              <option value={'Bhojpuri'}>Bhojpuri</option>
             </select>
           </div>
           <div className='filterBox'>
@@ -273,7 +281,7 @@ function Homepage() {
               onChange={(e) => setGenreFilter(e.target.value)}
             >
               <option value={'all'}>All</option>
-              <option value={'Documentory'}>Documentory</option>
+              <option value={'Thriller'}>Thriller</option>
               <option value={'Comedy'}>Comedy</option>
               <option value={'Crime'}>Crime</option>
               <option value={'Romance'}>Romance</option>

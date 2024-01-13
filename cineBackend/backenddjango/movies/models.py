@@ -75,3 +75,30 @@ class Reply(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    userProfile = models.TextField(
+        default="http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png"
+    )
+
+
+class LikeWeb(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    review = models.ForeignKey(ReviewFromWeb, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class DislikeWeb(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    review = models.ForeignKey(ReviewFromWeb, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ReplyWeb(models.Model):
+    review = models.ForeignKey(
+        ReviewFromWeb, on_delete=models.CASCADE, related_name="replies"
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    userProfile = models.TextField(
+        default="http://arshdeep54.pythonanywhere.com/media/profile_images/defaultprofile.png"
+    )

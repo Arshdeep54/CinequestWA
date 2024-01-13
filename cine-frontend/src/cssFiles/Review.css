@@ -56,8 +56,8 @@
 }
 .ldBtn {
     cursor: pointer;
-    margin-left: 6px;
-    margin-right: 3px;
+    margin-left: 11px;
+        margin-right: 3px;
 }
 .userprofileReply {
     width: 35px;
@@ -96,6 +96,37 @@ button.pReplyBtn {
     font-size: 18px;
     border-radius: 9px;
     cursor: pointer;
+}
+.replyLeft img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.replyLeft {
+    width: 35px;
+    height: 35px;
+    margin-right: 20px;
+    margin-top: 13px;
+}
+.ReplyContainer{
+    margin: 0px 1px;
+    padding: 0px 0px;
+    /* background-color: white; */
+    display: flex;
+    flex-direction: row;
+    /* border-radius: 9px; */
+    width: 70%;
+    height: max-content;
+    justify-content: space-between;}
+.replyMain {
+    margin: 6px 1px;
+    padding: 6px 0px;
+    display: flex;
+    height: max-content;
+}
+.menuicon{
+    position: relative;
+    padding-top: 16px;
 }
 @media only screen and (max-width: 767px) {
     .reviewLeft{

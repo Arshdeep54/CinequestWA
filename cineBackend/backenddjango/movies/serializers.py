@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from .models import Movie, Review, ReviewFromWeb, FavouriteMovie, Reply
+from .models import Movie, Review, ReviewFromWeb, FavouriteMovie, Reply, ReplyWeb
 
 
 # class LanguageSerializer(serializers.ModelSerializer):
@@ -54,10 +54,27 @@ class LikedReviewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class LikedWebReviewSerializer(serializers.ModelSerializer):
+    made_at = serializers.DateField()
+
+    class Meta:
+        model = ReviewFromWeb
+        fields = "__all__"
+
+
 class ReplySerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.name")
     review = serializers.ReadOnlyField(source="review.id")
 
     class Meta:
         model = Reply
+        fields = "__all__"
+
+
+class ReplyWebSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source="user.name")
+    review = serializers.ReadOnlyField(source="review.id")
+
+    class Meta:
+        model = ReplyWeb
         fields = "__all__"

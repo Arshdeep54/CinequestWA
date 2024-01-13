@@ -3,11 +3,16 @@ import '../cssFiles/Login.css';
 import Navbar from './Navbar';
 import axios from 'axios';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { GrHide } from 'react-icons/gr';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 function ChangePassword() {
   const navigate = useNavigate();
   const { uid, sent_token } = useParams();
   // console.log(uid, sent_token);
   const [password, setPassword] = useState('');
+  const [passwordhide, setPasswordhide] = useState(true);
+
+  const [passwordhide2, setPasswordhide2] = useState(true);
   const [password2, setPassword2] = useState('');
   const onButtonClick = async () => {
     if (uid && sent_token) {
@@ -59,22 +64,52 @@ function ChangePassword() {
           <div>Change Password</div>
         </div>
         <br />
-        <div className={'inputContainer'}>
+        <div className={'inputContainer'} style={{ position: 'relative' }}>
           <input
             value={password}
+            type={passwordhide ? 'password' : 'text'}
             placeholder='New password '
             onChange={(e) => setPassword(e.target.value)}
             className={'inputBox'}
           />
+          <span
+            style={{
+              position: 'absolute',
+              top: '31%',
+              right: '4%',
+              zIndex: 22,
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              setPasswordhide(!passwordhide);
+            }}
+          >
+            {passwordhide ? <FiEye /> : <FiEyeOff />}
+          </span>
         </div>
         <br />
-        <div className={'inputContainer'}>
+        <div className={'inputContainer'} style={{ position: 'relative' }}>
           <input
             value={password2}
+            type='password'
             placeholder='Confirm password'
             onChange={(ev) => setPassword2(ev.target.value)}
             className={'inputBox'}
           />
+          <span
+            style={{
+              position: 'absolute',
+              top: '31%',
+              right: '4%',
+              zIndex: 22,
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              setPasswordhide2(!passwordhide2);
+            }}
+          >
+            {passwordhide2 ? <FiEye /> : <FiEyeOff />}
+          </span>
         </div>
         <br />
         <div className={'inputContainer'}>

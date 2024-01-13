@@ -10,8 +10,13 @@ import {
   AiFillDislike,
 } from 'react-icons/ai';
 import { FaReply } from 'react-icons/fa';
+import { CiMenuKebab } from 'react-icons/ci';
+import { IoMdClose } from 'react-icons/io';
+import { MdComment } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
+import { Pointer } from 'lucide-react';
 
 const ReviewComp = ({ review, from }) => {
   const navigate = useNavigate();
@@ -21,23 +26,29 @@ const ReviewComp = ({ review, from }) => {
   const [replyContent, setReplyContent] = useState('');
   const [profilePic, setProfilePic] = useState(null);
   const [replies, setReplies] = useState([]);
+  var base_url;
+  if (from === 'authUsers') {
+    base_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/`;
+  } else {
+    base_url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/webreviews/${review.id}/`;
+  }
   const handleLike = async () => {
     if (localStorage.getItem('access')) {
       //handlelike
       const token = localStorage.getItem('access');
       const config = {
         headers: {
-          'Content-Type': 'aplication/json',
+          'Content-Type': 'application/json',
           Authorization: `JWT ${token}`,
         },
       };
       const data = {};
+
       if (liked) {
-        const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/unlike/`;
+        const url = `${base_url}unlike/`;
         await axios
           .post(url, data, config)
           .then((res) => {
-            console.log(res);
             setLiked(false);
             review.likes -= 1;
           })
@@ -45,15 +56,15 @@ const ReviewComp = ({ review, from }) => {
             console.log(error);
           });
       } else {
-        const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/like/`;
+        const url = `${base_url}like/`;
         await axios
           .post(url, data, config)
           .then((res) => {
-            console.log(res);
             setLiked(true);
             review.likes += 1;
           })
           .catch((error) => {
+            console.log(error);
             console.log(error.response.data['oppexists']);
             if (error.response.data['oppexists']) {
               handleDislike();
@@ -71,17 +82,16 @@ const ReviewComp = ({ review, from }) => {
       const token = localStorage.getItem('access');
       const config = {
         headers: {
-          'Content-Type': 'aplication/json',
+          'Content-Type': 'application/json',
           Authorization: `JWT ${token}`,
         },
       };
       const data = {};
       if (disliked) {
-        const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/undislike/`;
+        const url = `${base_url}undislike/`;
         await axios
           .post(url, data, config)
           .then((res) => {
-            console.log(res);
             setDisLiked(false);
             review.dislikes -= 1;
           })
@@ -89,16 +99,14 @@ const ReviewComp = ({ review, from }) => {
             console.log(error);
           });
       } else {
-        const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/dislike/`;
+        const url = `${base_url}dislike/`;
         await axios
           .post(url, data, config)
           .then((res) => {
-            console.log(res);
             setDisLiked(true);
             review.dislikes += 1;
           })
           .catch((error) => {
-            console.log(error.response.data['oppexists']);
             if (error.response.data['oppexists']) {
               handleLike();
               handleDislike();
@@ -112,41 +120,55 @@ const ReviewComp = ({ review, from }) => {
   const handleReply = async () => {
     setReplyCont(!replyCont);
   };
-  const getLikedDisliked = async () => {
+  const getLiked = async () => {
     if (localStorage.getItem('access')) {
       const token = localStorage.getItem('access');
       const config = {
         headers: {
-          'Content-Type': 'aplication/json',
+          'Content-Type': 'application/json',
           Authorization: `JWT ${token}`,
         },
       };
+      var base_url_get;
       if (from === 'authUsers') {
-        const url = `${process.env.REACT_APP_API_URL}moviesapi/liked-reviews/`;
-        await axios
-          .get(url, config)
-          .then((res) => {
-            console.log(res.data);
-            const isLiked = res.data.some(
-              (lreview) => review.id === lreview.id
-            );
-            console.log(isLiked);
-            setLiked(isLiked);
-          })
-          .catch((e) => console.log(e));
-        const url_d = `${process.env.REACT_APP_API_URL}moviesapi/disliked-reviews/`;
-        await axios
-          .get(url_d, config)
-          .then((res) => {
-            console.log(res.data);
-            const isDisLiked = res.data.some(
-              (dreview) => review.id === dreview.id
-            );
-            console.log('isDisliked', isDisLiked);
-            setDisLiked(isDisLiked);
-          })
-          .catch((e) => console.log(e));
+        base_url_get = `${process.env.REACT_APP_API_URL}moviesapi/liked-reviews`;
+      } else {
+        base_url_get = `${process.env.REACT_APP_API_URL}moviesapi/liked-reviews-web`;
       }
+
+      await axios
+        .get(base_url_get, config)
+        .then((res) => {
+          const isLiked = res.data.some((lreview) => review.id === lreview.id);
+          setLiked(isLiked);
+        })
+        .catch((e) => console.log(e));
+    }
+  };
+  const getDisLiked = async () => {
+    if (localStorage.getItem('access')) {
+      const token = localStorage.getItem('access');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${token}`,
+        },
+      };
+      var base_url_get;
+      if (from === 'authUsers') {
+        base_url_get = `${process.env.REACT_APP_API_URL}moviesapi/disliked-reviews`;
+      } else {
+        base_url_get = `${process.env.REACT_APP_API_URL}moviesapi/disliked-reviews-web`;
+      }
+      await axios
+        .get(base_url_get, config)
+        .then((res) => {
+          const isDisLiked = res.data.some(
+            (dreview) => review.id === dreview.id
+          );
+          setDisLiked(isDisLiked);
+        })
+        .catch((e) => console.log(e));
     }
   };
   const getProfilePic = async () => {
@@ -159,31 +181,167 @@ const ReviewComp = ({ review, from }) => {
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
       const response = await axios.get(url, config);
-      console.log(response.data.profile_picture);
       setProfilePic(response.data.profile_picture);
     }
   };
-  const getReplies=async ()=>{
-    console.log("geting Replies....")
-  }
+  const getReplies = async () => {
+    const url = `${base_url}replies/`;
+    await axios
+      .get(url)
+      .then((res) => {
+        setReplies([...res.data].reverse());
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  const addReply = async () => {
+    if (localStorage.getItem('access')) {
+      const token = localStorage.getItem('access');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${token}`,
+        },
+      };
+      const body = {
+        content: replyContent,
+        userProfile: profilePic,
+      };
+      const url = `${base_url}replies/`;
+      await axios.post(url, body, config).then((res) => {
+        setReplyContent('');
+        getReplies();
+      });
+    } else {
+      navigate('/auth/login');
+    }
+  };
+  const deleteReply = async (reply) => {
+    if (localStorage.getItem('access')) {
+      const token = localStorage.getItem('access');
+
+      const config = {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      };
+      const url = `${base_url}replies/${reply.id}`;
+      await axios.delete(url, config).then((res) => {
+        getReplies();
+      });
+    }
+  };
   useEffect(() => {
-    getLikedDisliked();
+    getLiked();
+    getDisLiked();
     getReplies();
     getProfilePic();
   }, []);
   useEffect(() => {
-    console.log(replyCont);
     // if(replyCont){
-
     // }
   }, [replyCont]);
   const ReplyComp = ({ reply }) => {
+    const [iconOn, setIconOn] = useState(false);
+    const [canDelete, SetCanDelete] = useState(false);
+    const canDeleteF = async () => {
+      if (localStorage.getItem('access')) {
+        const token = localStorage.getItem('access');
+
+        const config = {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        };
+        const url = `${process.env.REACT_APP_API_URL}moviesapi/user-replies/`;
+
+        await axios
+          .get(url, config)
+          .then((res) => {
+            const candelete = res.data.some(
+              (replyres) => replyres.id === reply.id
+            );
+            SetCanDelete(candelete);
+          })
+          .catch((e) => console.log(e));
+      } else {
+        return false;
+      }
+    };
+    useEffect(() => {
+      canDeleteF();
+    }, []);
+
     return (
       <>
-        <div>{reply.content}</div>
+        <div className='ReplyContainer'>
+          <div className='replyMain'>
+            <div className='replyLeft'>
+              <img
+                src={
+                  reply.userProfile.length > 10
+                    ? reply.userProfile
+                    : `${process.env.REACT_APP_API_URL}media/profile_images/${reply.userProfile}`
+                }
+                alt='userProfilePic'
+              />
+            </div>
+            <div className='replyRight'>
+              <div className='row-1'>
+                <div className='usernameText'>@{reply.user}</div>
+                <div className='reviewmade'>
+                  {reply.created_at.slice(0, 10)}
+                </div>
+              </div>
+              <div className='row-2'>
+                <div className='r_descText'>{reply.content}</div>
+              </div>
+            </div>
+          </div>
+          {canDelete && (
+            <div className='menuicon'>
+              {iconOn ? (
+                <IoMdClose
+                  onClick={() => {
+                    setIconOn(!iconOn);
+                  }}
+                />
+              ) : (
+                <CiMenuKebab
+                  onClick={() => {
+                    setIconOn(!iconOn);
+                  }}
+                />
+              )}
+              {iconOn && (
+                <div
+                  className='deleteB'
+                  style={{
+                    position: 'absolute',
+                    top: '44%',
+                    left: '57%',
+                    transform: ' translateX(-100%)',
+                    backgroundColor: 'rgb(157 155 155)',
+                    color: 'rgb(255, 255, 255)',
+                    width: '100px',
+                    padding: ' 5px',
+                    borderRadius: '3px',
+                    zIndex: 1000,
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => deleteReply(reply)}
+                >
+                  Delete
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </>
     );
   };
+
   return (
     <>
       <div
@@ -212,15 +370,46 @@ const ReviewComp = ({ review, from }) => {
           </div>
           <div className='reviewIcons'>
             <div className='ldBtn' onClick={handleLike}>
-              {liked ? <AiFillLike /> : <AiOutlineLike />}
+              {liked ? (
+                <AiFillLike size={'23px'} />
+              ) : (
+                <AiOutlineLike size={'23px'} />
+              )}
             </div>
             <div>{review.likes}</div>
             <div className='ldBtn' onClick={handleDislike}>
-              {disliked ? <AiFillDislike /> : <AiOutlineDislike />}
+              {disliked ? (
+                <AiFillDislike size={'23px'} />
+              ) : (
+                <AiOutlineDislike size={'23px'} />
+              )}
             </div>
             <div>{review.dislikes}</div>
-            <div className='ldBtn' onClick={handleReply}>
-              <FaReply />
+            <div
+              className='ldBtn'
+              onClick={handleReply}
+              style={{ position: 'relative' }}
+            >
+              <MdComment size={'23px'} />
+              {replies.length > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: '50%',
+                    left: ' 60%',
+                    width: '20px',
+                    height: '20px',
+                    textAlign: 'center',
+                    border: '1px solid',
+                    borderRadius: '50%',
+                    backgroundColor: '#060606',
+                    color: 'white',
+                    zIndex: 2,
+                  }}
+                >
+                  {replies.length}
+                </span>
+              )}
             </div>
           </div>
           {replyCont && (
@@ -249,7 +438,9 @@ const ReviewComp = ({ review, from }) => {
                     />
                   </div>
                   <div className='preply'>
-                    <button className='pReplyBtn'>Post</button>
+                    <button className='pReplyBtn' onClick={addReply}>
+                      Post
+                    </button>
                   </div>
                 </div>
                 <div className='showRepliesCont'>

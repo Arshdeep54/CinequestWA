@@ -4,6 +4,7 @@ import '../cssFiles/Login.css';
 import axios from 'axios';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FileX } from 'lucide-react';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { TailSpin } from 'react-loader-spinner';
 
 function Loginpage() {
@@ -101,6 +102,7 @@ function Loginpage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
+    const [passwordhide, setPasswordhide] = useState(true);
     const [passwordError, setPasswordError] = useState('');
     const [loggingin, setLoggingin] = useState(false);
     const onButtonClick = async () => {
@@ -153,14 +155,28 @@ function Loginpage() {
             <label className='errorLabel'>{emailError}</label>
           </div>
           <br />
-          <div className={'inputContainer'}>
+          <div className={'inputContainer'} style={{ position: 'relative' }}>
             <input
-              type='password'
+              type={passwordhide ? 'password' : 'text'}
               value={password}
               placeholder='Enter your password here'
               onChange={(ev) => setPassword(ev.target.value)}
               className={'inputBox'}
             />
+            <span
+              style={{
+                position: 'absolute',
+                top: '31%',
+                right: '4%',
+                zIndex: 22,
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setPasswordhide(!passwordhide);
+              }}
+            >
+              {passwordhide ? <FiEye /> : <FiEyeOff />}
+            </span>
             <label className='errorLabel'>{passwordError}</label>
           </div>
           <br />

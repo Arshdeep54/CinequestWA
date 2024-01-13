@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 // import { LogOut } from 'lucide-react';
 import axios from 'axios';
 import '../cssFiles/UserProfile.css';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import UserReviews from './UserReviews';
 
 import { ShieldAlert } from 'lucide-react';
@@ -118,10 +118,14 @@ function Userprofile() {
         <div className='leftLinksSection'>
           <div className='contenttext'>Contents</div>
           <br />
+          {/* <Link to='/auth/profile#profile'>User Profile</Link>
+          <Link to='/auth/profile#reviews'>Your Reviews</Link>
+          <Link to='/auth/profile#favourites'>Favourite Movies </Link>
+          <Link to='/auth/profile#accSettings'>Account Settings</Link> */}
           <a href='#profile'>User Profile</a>
           <a href='#reviews'>Your Reviews</a>
-          <a href='#favourites'>Favourite Movies </a>
           <a href='#accSettings'>Account Settings</a>
+          <a href='#favourites'>Favourite Movies </a>
         </div>
         <div className='rightMain'>
           <div className='userInfo' id='profile'>

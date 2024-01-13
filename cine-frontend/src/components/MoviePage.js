@@ -8,6 +8,7 @@ import IMDBlogo from '../assets/imdblogo.png';
 import { TailSpin } from 'react-loader-spinner';
 import '../cssFiles/MoviePage.css';
 import ReviewComp from './ReviewComp';
+import LatestMovies from './LatestMovies';
 const MoviePage = () => {
   const { uid } = useParams();
   const navigate = useNavigate();
@@ -41,6 +42,8 @@ const MoviePage = () => {
   const [favourite, setFavourite] = useState(false);
   const [addToFav, setAddToFav] = useState(false);
   const [fav_id, setFav_id] = useState(null);
+  // const [likedReviews, setlikedReviews] = useState([]);
+  // const [dislikedReviews, setdislikedReviews] = useState([]);
   const [genreList, setGenreList] = useState([]);
   const [textareaHeight, setTextareaHeight] = useState(117);
   const minTextareaHeight = 18 * 1.5;
@@ -94,6 +97,45 @@ const MoviePage = () => {
       setReviews([...reviews_res.data]);
     }
   };
+  // const getLiked = async () => {
+  //   if (localStorage.getItem('access')) {
+  //     const token = localStorage.getItem('access');
+  //     const config = {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `JWT ${token}`,
+  //       },
+  //     };
+
+  //     const url = `${process.env.REACT_APP_API_URL}moviesapi/liked-reviews/`;
+  //     await axios
+  //       .get(url, config)
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         setlikedReviews([...res.data]);
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
+  // };
+  // const getDisLiked = async () => {
+  //   if (localStorage.getItem('access')) {
+  //     const token = localStorage.getItem('access');
+  //     const config = {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `JWT ${token}`,
+  //       },
+  //     };
+  //     const url_d = `${process.env.REACT_APP_API_URL}moviesapi/disliked-reviews/`;
+  //     await axios
+  //       .get(url_d, config)
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         setdislikedReviews([...res.data]);
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
+  // };
   const saveReview = async () => {
     const token = localStorage.getItem('access');
     if (token) {
@@ -161,9 +203,11 @@ const MoviePage = () => {
     const yOffset = document.getElementById('moviecontainer').offsetTop;
     window.scrollTo(0, yOffset);
     getMovieAndReviews();
+    // getLiked();
+    // getDisLiked();
     getProfilePic();
     setRendering(true);
-  }, []);
+  }, [uid]);
   useEffect(() => {
     console.log(reviews);
   }, [reviews]);
@@ -377,6 +421,9 @@ const MoviePage = () => {
           <div className='storylinehead'>Storyline</div>
           <div className='storyText'>{movie.storyline}</div>
         </div>
+        <div className='RecMovies'>
+          <LatestMovies orderBy={'recommended'} />
+        </div>
         <div className='reviewCont'>
           <div className='cont-aa flex-cont'>
             <div className='reviewCount'>
@@ -445,19 +492,36 @@ const MoviePage = () => {
           </div>
           <div className='showRevs'>
             {reviewsUser.map((review) => {
+              // const liked = likedReviews.some(
+              //   (lreview) => lreview.id == review.id
+              // );
+              // const disliked = dislikedReviews.some(
+              //   (dreview) => dreview.id == review.id
+              // );
+
               return (
                 <ReviewComp
                   review={review}
                   from={'authUsers'}
+                  // isliked={liked}
+                  // isdisliked={disliked}
                   // profilepic={profilePic}
                 />
               );
             })}
             {reviews.map((review) => {
+              // const liked = likedReviews.some(
+              //   (lreview) => lreview.id == review.id
+              // );
+              // const disliked = dislikedReviews.some(
+              //   (dreview) => dreview.id == review.id
+              // );
               return (
                 <ReviewComp
                   review={review}
                   from={'webUsers'}
+                  // isliked={liked}
+                  // isdisliked={disliked}
                   // profilepic={profilePic}
                 />
               );
