@@ -289,13 +289,16 @@ textarea.descText {
         margin: 15px 0px;
     }
     .showRevs {
-        padding-right: 71px;
+        padding-right: 11px;
     }
     .userProfile{
         margin-left: 5%;
     }
     .reviewCont {
         margin: 10px;
+    }
+    .OnlyReviewCont {
+        margin: 15px 0px;
     }
 .middleCont-right {
     margin: 17px 0px;

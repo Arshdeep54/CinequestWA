@@ -53,7 +53,13 @@ const ReviewComp = ({ review, from }) => {
             review.likes -= 1;
           })
           .catch((error) => {
-            console.log(error);
+            console.error(error);
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
+            }
           });
       } else {
         const url = `${base_url}like/`;
@@ -69,6 +75,13 @@ const ReviewComp = ({ review, from }) => {
             if (error.response.data['oppexists']) {
               handleDislike();
               handleLike();
+            }
+
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
             }
           });
       }
@@ -96,7 +109,13 @@ const ReviewComp = ({ review, from }) => {
             review.dislikes -= 1;
           })
           .catch((error) => {
-            console.log(error);
+            console.error(error);
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
+            }
           });
       } else {
         const url = `${base_url}dislike/`;
@@ -107,9 +126,17 @@ const ReviewComp = ({ review, from }) => {
             review.dislikes += 1;
           })
           .catch((error) => {
+            console.error(error);
             if (error.response.data['oppexists']) {
               handleLike();
               handleDislike();
+            }
+
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
             }
           });
       }
@@ -142,7 +169,15 @@ const ReviewComp = ({ review, from }) => {
           const isLiked = res.data.some((lreview) => review.id === lreview.id);
           setLiked(isLiked);
         })
-        .catch((e) => console.log(e));
+        .catch((error) => {
+          console.error(error);
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     }
   };
   const getDisLiked = async () => {
@@ -168,7 +203,15 @@ const ReviewComp = ({ review, from }) => {
           );
           setDisLiked(isDisLiked);
         })
-        .catch((e) => console.log(e));
+        .catch((error) => {
+          console.error(error);
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     }
   };
   const getProfilePic = async () => {
@@ -180,8 +223,20 @@ const ReviewComp = ({ review, from }) => {
         },
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
-      const response = await axios.get(url, config);
-      setProfilePic(response.data.profile_picture);
+      await axios
+        .get(url, config)
+        .then((response) => {
+          setProfilePic(response.data.profile_picture);
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     }
   };
   const getReplies = async () => {
@@ -209,10 +264,21 @@ const ReviewComp = ({ review, from }) => {
         userProfile: profilePic,
       };
       const url = `${base_url}replies/`;
-      await axios.post(url, body, config).then((res) => {
-        setReplyContent('');
-        getReplies();
-      });
+      await axios
+        .post(url, body, config)
+        .then((res) => {
+          setReplyContent('');
+          getReplies();
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     } else {
       navigate('/auth/login');
     }
@@ -227,9 +293,20 @@ const ReviewComp = ({ review, from }) => {
         },
       };
       const url = `${base_url}replies/${reply.id}`;
-      await axios.delete(url, config).then((res) => {
-        getReplies();
-      });
+      await axios
+        .delete(url, config)
+        .then((res) => {
+          getReplies();
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     }
   };
   useEffect(() => {
@@ -264,7 +341,15 @@ const ReviewComp = ({ review, from }) => {
             );
             SetCanDelete(candelete);
           })
-          .catch((e) => console.log(e));
+          .catch((error) => {
+            console.error(error);
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
+            }
+          });
       } else {
         return false;
       }
@@ -284,7 +369,7 @@ const ReviewComp = ({ review, from }) => {
                     ? reply.userProfile
                     : `${process.env.REACT_APP_API_URL}media/profile_images/${reply.userProfile}`
                 }
-                alt='userProfilePic'
+                alt='Pic'
               />
             </div>
             <div className='replyRight'>
@@ -356,7 +441,7 @@ const ReviewComp = ({ review, from }) => {
                 ? review.userProfile
                 : `${process.env.REACT_APP_API_URL}media/profile_images/${review.userProfile}`
             }
-            alt='userProfilePic'
+            alt='Pic'
           />
         </div>
         <div className='reviewRight'>

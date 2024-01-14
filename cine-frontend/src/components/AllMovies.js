@@ -37,15 +37,16 @@ const AllMovies = () => {
             <MovieCard movie={movie} />
           ))}
         </div>
+        <div className='seemorebtn'>
+          {visibleMovies > itemsPerPage && (
+            <div style={{ cursor: 'pointer' }} onClick={showLessMovies}>
+              See Less
+            </div>
+          )}
 
-        {visibleMovies > itemsPerPage && (
-          <div style={{ marginTop: '10px' }}>
-            <button onClick={showLessMovies}>See Less</button>
+          <div style={{ cursor: 'pointer' }} onClick={showMoreMovies}>
+            See More
           </div>
-        )}
-
-        <div style={{ marginTop: '10px' }}>
-          <button onClick={showMoreMovies}>See More</button>
         </div>
       </div>
     </>

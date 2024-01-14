@@ -56,13 +56,12 @@ function Homepage() {
           movie.language.includes(
             languageFilter === 'all' ? movie.language : languageFilter
           ) &&
-          movie.release_date
-            .slice(0, 4)
-            .includes(
-              ReleasedINFilter === 'all'
-                ? movie.release_date.slice(0, 4)
-                : ReleasedINFilter
-            ) &&
+          (movie.release_date.slice(0, 4) ===
+            (ReleasedINFilter === 'all'
+              ? movie.release_date.slice(0, 4)
+              : ReleasedINFilter) ||
+            (ReleasedINFilter === 'below' &&
+              parseInt(movie.release_date.slice(0, 4)) < 2019)) &&
           movie.genre.includes(
             genreFilter === 'all' ? movie.genre : genreFilter
           )
@@ -92,13 +91,12 @@ function Homepage() {
             movie.language.includes(
               languageFilter === 'all' ? movie.language : languageFilter
             ) &&
-            movie.release_date
-              .slice(0, 4)
-              .includes(
-                ReleasedINFilter === 'all'
-                  ? movie.release_date.slice(0, 4)
-                  : ReleasedINFilter
-              ) &&
+            (movie.release_date.slice(0, 4) ===
+              (ReleasedINFilter === 'all'
+                ? movie.release_date.slice(0, 4)
+                : ReleasedINFilter) ||
+              (ReleasedINFilter === 'below' &&
+                parseInt(movie.release_date.slice(0, 4)) < 2019)) &&
             movie.genre.includes(
               genreFilter === 'all' ? movie.genre : genreFilter
             )
@@ -121,13 +119,10 @@ function Homepage() {
         movie.language.includes(
           languageFilter === 'all' ? movie.language : languageFilter
         ) &&
-        (movie.release_date
-          .slice(0, 4)
-          .includes(
-            ReleasedINFilter === 'all'
-              ? movie.release_date.slice(0, 4)
-              : ReleasedINFilter
-          ) ||
+        (movie.release_date.slice(0, 4) ===
+          (ReleasedINFilter === 'all'
+            ? movie.release_date.slice(0, 4)
+            : ReleasedINFilter) ||
           (ReleasedINFilter === 'below' &&
             parseInt(movie.release_date.slice(0, 4)) < 2019)) &&
         movie.genre.includes(genreFilter === 'all' ? movie.genre : genreFilter)

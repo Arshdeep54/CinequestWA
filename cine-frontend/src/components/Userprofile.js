@@ -5,6 +5,7 @@ import axios from 'axios';
 import '../cssFiles/UserProfile.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import UserReviews from './UserReviews';
+import Footer from './Footer';
 
 import { ShieldAlert } from 'lucide-react';
 import UserFavs from './UserFavs';
@@ -12,6 +13,18 @@ import { TailSpin } from 'react-loader-spinner';
 // import Userinfo from './Userinfo';
 function Userprofile() {
   const navigate = useNavigate();
+  const pics = [
+    'Java_1.png',
+    'gamer.png',
+    'cat.png',
+    'hacker.png',
+    'man(1).png',
+    'man.png',
+    'woman.png',
+    'profile.png',
+    'profile(1).png',
+    'user.png',
+  ];
   const [userProfile, setUserProfile] = useState({
     firstName: '',
     LastName: '',
@@ -23,8 +36,19 @@ function Userprofile() {
     aboutmovielife: '',
   });
   const [profile_picture, setProfilePicture] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [saving, setSaving] = useState(false);
   const [profile_toShow, setProfileToShow] = useState(null);
+  const assetsPath = '../assets';
+  // const assetsPath = process.env.PUBLIC_URL + '/src/assets';
+
+  const handleImageClick = (imageName) => {
+    const imagePath = `${assetsPath}/${imageName}`;
+    console.log(imagePath);
+    setSelectedImage((prevSelectedImage) =>
+      prevSelectedImage === imagePath ? null : imagePath
+    );
+  };
   const getuserData = async () => {
     const token = localStorage.getItem('access');
     const config = {
@@ -33,26 +57,38 @@ function Userprofile() {
       },
     };
     const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
-    const response = await axios.get(url, config);
-    console.log(response.data.profile_picture);
-    const userprofile = {
-      firstName:
-        response.data.first_name === 'null' ? '' : response.data.first_name,
-      LastName:
-        response.data.last_name === 'null' ? '' : response.data.last_name,
-      dob: response.data.date_of_birth,
-      gender: response.data.gender,
-      mobile: response.data.mobile === 'null' ? '' : response.data.mobile,
-      aboutmovielife:
-        response.data.aboutmovieLife === 'null'
-          ? ''
-          : response.data.aboutmovieLife,
-      email: response.data.email,
-      isEmailVerified: response.data.email_verified,
-    };
-    console.log(userprofile);
-    setUserProfile({ ...userprofile });
-    setProfileToShow(response.data.profile_picture);
+    await axios
+      .get(url, config)
+      .then((response) => {
+        console.log(response.data.profile_picture);
+        const userprofile = {
+          firstName:
+            response.data.first_name === 'null' ? '' : response.data.first_name,
+          LastName:
+            response.data.last_name === 'null' ? '' : response.data.last_name,
+          dob: response.data.date_of_birth,
+          gender: response.data.gender,
+          mobile: response.data.mobile === 'null' ? '' : response.data.mobile,
+          aboutmovielife:
+            response.data.aboutmovieLife === 'null'
+              ? ''
+              : response.data.aboutmovieLife,
+          email: response.data.email,
+          isEmailVerified: response.data.email_verified,
+        };
+        console.log(userprofile);
+        setUserProfile({ ...userprofile });
+        setProfileToShow(response.data.profile_picture);
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.status == 401) {
+          console.log('Token expired or invalid. Please log in again.');
+          localStorage.removeItem('access');
+          alert('Please login again');
+          navigate('/auth/login');
+        }
+      });
   };
   useEffect(() => {
     getuserData();
@@ -87,17 +123,31 @@ function Userprofile() {
     formData.append('gender', userProfile.gender);
     formData.append('mobile', userProfile.mobile);
     formData.append('aboutmovieLife', userProfile.aboutmovielife);
-    if (profile_picture && profile_picture[0]) {
+    if (selectedImage && !profile_picture) {
+      formData.append('profile_picture', selectedImage);
+    } else if (profile_picture && profile_picture[0]) {
       formData.append('profile_picture', profile_picture[0]);
     }
     const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
-    const response = await axios.patch(url, formData, config);
-    console.log(response.data);
-    if (response) {
-      setProfilePicture(null);
-      document.getElementById('image').value = '';
-      getuserData();
-    }
+    await axios
+      .patch(url, formData, config)
+      .then((response) => {
+        console.log(response.data);
+        if (response) {
+          setProfilePicture(null);
+          document.getElementById('image').value = '';
+          getuserData();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.status == 401) {
+          console.log('Token expired or invalid. Please log in again.');
+          localStorage.removeItem('access');
+          alert('Please login again');
+          navigate('/auth/login');
+        }
+      });
     setSaving(false);
   };
   const Logout = () => {
@@ -106,6 +156,9 @@ function Userprofile() {
   };
   const changePassword = () => {
     navigate('/auth/changepassword');
+  };
+  const yourActivityPage = () => {
+    navigate('/auth/activity');
   };
   const handleVerify = () => {
     navigate('/auth/verifyemail');
@@ -153,6 +206,49 @@ function Userprofile() {
                         setProfilePicture(e.target.files);
                       }}
                     />
+                  </div>
+                  <div style={{ display: 'none' }}>Choose Default</div>
+                  <div style={{ display: 'none' }} className='picCont'>
+                    <div className='row-1-pics'>
+                      {pics.slice(0, 5).map((pic) => {
+                        return (
+                          <>
+                            <div className='dimgCont'>
+                              <img
+                                onClick={() => handleImageClick(pic)}
+                                src={`https://arshdeep54.pythonanywhere.com/media/profile_images/${pic}`}
+                                style={{
+                                  border:
+                                    selectedImage === pic
+                                      ? '2px solid black'
+                                      : '1px solid transparent',
+                                }}
+                              />
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+                    <div className='row-2-pics'>
+                      {pics.slice(5, 10).map((pic) => {
+                        return (
+                          <>
+                            <div className='dimgCont'>
+                              <img
+                                onClick={() => handleImageClick(pic)}
+                                src={`https://arshdeep54.pythonanywhere.com/media/profile_images/${pic}`}
+                                style={{
+                                  border:
+                                    selectedImage === pic
+                                      ? '2px solid black'
+                                      : '1px solid transparent',
+                                }}
+                              />
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
                 <div className='upperright'>
@@ -312,16 +408,19 @@ function Userprofile() {
 
           <div className='userAccinfo' id='accSettings'>
             <div className='textPersonalInfo'>Account Settings </div>
-            <button className='savebtn' onClick={Logout}>
-              Log out
-            </button>
-            <button className='savebtn' onClick={changePassword}>
+            <div className='cbtn' onClick={yourActivityPage}>
+              Your Activity
+            </div>
+            <div className='cbtn' onClick={changePassword}>
               Change password
-            </button>
+            </div>
+            <div className='cbtn' onClick={Logout}>
+              Log out
+            </div>
           </div>
         </div>
       </div>
-      <footer>this is footer here </footer>
+      <Footer />
     </>
   );
 }

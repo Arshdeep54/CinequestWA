@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MovieCard from './MovieCard';
 import '../cssFiles/HomePage.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 const UserFavs = () => {
+  const navigate = useNavigate();
   const [favMovies, setFavMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [rendered, setRendered] = useState(false);
@@ -16,11 +17,23 @@ const UserFavs = () => {
       },
     };
     const url = `${process.env.REACT_APP_API_URL}moviesapi/user-favourite-movies/`;
-    const fav_movies = await axios.get(url, config);
-    if (fav_movies.status == 200) {
-      setFavMovies([...fav_movies.data]);
-      console.log(fav_movies.data);
-    }
+    await axios
+      .get(url, config)
+      .then((fav_movies) => {
+        if (fav_movies.status == 200) {
+          setFavMovies([...fav_movies.data]);
+          console.log(fav_movies.data);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.status == 401) {
+          console.log('Token expired or invalid. Please log in again.');
+          localStorage.removeItem('access');
+          alert('Please login again');
+          navigate('/auth/login');
+        }
+      });
   };
   const getMovies = async () => {
     const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/`;

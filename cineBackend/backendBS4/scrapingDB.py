@@ -37,46 +37,28 @@ def convertDate(date):
 
 
 def post_to_api(movie):
-    url = "http://arshdeep54.pythonanywhere.com/moviesapi/movies/"
+    url = "https://arshdeep54.pythonanywhere.com/moviesapi/movies/"
     res = requests.get(url)
-    # print(len(list(res.json())))
-    print(movie["title"])
-    for movie_item in list(res.json()):
-        if movie["title"] == movie_item["title"]:
-            body = {
-                # "storyline": movie["storyline"],
-                # "platform": movie["platform"],
-                # "platform_link": movie["platform_link"],
-                # "starcast": movie["starcast"],
-                # "writers": movie["writers"],
-                # "genre": movie["genre"],
-                # "language": movie["language"],
-            }
-            # print(url + str(movie_item["id"]) + "/")
-            # response = requests.patch(
-            #     url=(url + str(movie_item["id"]) + "/"), data=body
-            # )
-            # print("data patched ", response.status_code)
-            print("movie alreadyt there", movie["title"])
-            return movie_item["id"]
-    # # return -1
-    response = requests.post(url, movie)
-    print(response.status_code, "new movie added:", movie["title"])
-    if response.status_code == 201:
-        return response.json()["id"]
-    else:
-        return 0
 
-    # return 0
+    print(movie["title"])
+    for movie_item in res.json():
+        if movie["title"] == movie_item["title"]:
+            print("Movie already there:", movie["title"])
+            return movie_item["id"]
+
+    response = requests.post(url, json=movie)
+    print(response.status_code, "new movie added:", movie["title"])
+    print(response.json())
+    return response.json()["id"]
 
 
 def post_review(review, movie_id):
     url = (
-        f"http://arshdeep54.pythonanywhere.com/moviesapi/movies/{movie_id}/webreviews/"
+        f"https://arshdeep54.pythonanywhere.com/moviesapi/movies/{movie_id}/webreviews/"
     )
     res = requests.get(url)
     # print(len(list(res.json())))
-    # print(review["review_id"])
+    print(review["review_id"])
     if len(list(res.json())) > 0:
         for review_item in list(res.json()):
             if review["review_id"] == review_item["review_id"]:
@@ -320,7 +302,7 @@ def getMovieDetails(link):
             production = "TSeries (Default)"
             language = "Hindi (Default)"
             platform = "Theaters"
-            platform_link = ""
+            platform_link = " "
             # print(len(langplat_comp[0].get("class")))
             for list_item in langplat_comp:
                 if len(list_item.get("class")) == 2:
@@ -388,8 +370,8 @@ def getMovieDetails(link):
                 link[:last_slash_index]
                 + "/reviews?spoiler=hide&sort=curated&dir=asc&ratingFilter=0"
             )
-            if api_movie_id != 0:
-                post_reviews(api_movie_id, reviews_link)
+            print(api_movie_id)
+            post_reviews(int(api_movie_id), reviews_link)
             print(title, "done")
 
     except Exception as e:
@@ -399,7 +381,8 @@ def getMovieDetails(link):
 # Function to scrape IMDb website and extract movie details
 def scrape_imdb():
     # url = "https://www.imdb.com/search/title/?title_type=feature&sort=moviemeter,asc&countries=IN&languages=hi"
-    url = "https://www.imdb.com/search/title/?title_type=feature&release_date=2020-01-01,2020-12-31&sort=moviemeter,asc&countries=IN&languages=hi"
+    # url = "https://www.imdb.com/search/title/?title_type=feature&release_date=2020-01-01,2020-12-31&sort=moviemeter,asc&countries=IN&languages=hi"
+    url = "https://www.imdb.com/search/title/?title_type=feature&user_rating=6,10&release_date=2014-01-01,2014-12-31&sort=moviemeter,asc&countries=IN&languages=hi"
 
     response = requests.get(url, headers=headers)
     print(response.status_code)
@@ -413,14 +396,14 @@ def scrape_imdb():
             .find("main")
             .find(
                 "div",
-                class_="ipc-page-content-container ipc-page-content-container--center sc-872d7ac7-0 fqEQWL",
+                class_="ipc-page-content-container ipc-page-content-container--center sc-9b618954-0 sqGLE",
             )
-            # .find("section")
             .find_all(
                 "div",
                 class_="ipc-page-content-container ipc-page-content-container--center",
             )
         )
+        # print(movie_list)
         movie_list = (
             movie_list[1]
             .section.section.div.section.section.find_all("div")[1]
@@ -438,7 +421,7 @@ def scrape_imdb():
         for movie in movie_list:
             count += 1
             link = movie.div.div.div.div.find(
-                "div", class_="sc-43986a27-0 gUQEVh"
+                "div", class_="sc-935ed930-0 ccIaLF"
             ).div.a["href"]
             # link="https://www.imdb.com/title/tt12393526/"
             print(link)

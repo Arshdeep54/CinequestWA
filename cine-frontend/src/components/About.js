@@ -42,13 +42,24 @@ function About() {
           <li>Movie card having click to view details functionality</li>
         </ul>
         <ul>
-          <h4>Movie Page</h4>
+          <h4>Profile Page</h4>
           <li>
             User Infomation(profile picture,first name,last
             name,gender,Dob,Mobile,About Movie life) which can be updated
           </li>
           <li>All reviews made by the user</li>
           <li>User's Favorite Movies</li>
+          <li>Account Settings: Log out, Change password</li>
+        </ul>
+        <ul>
+          <h4>Movie Page</h4>
+          <li>All Movie details</li>
+          <li>Add to Favorite feature</li>
+          <li>Add review</li>
+          <li>Like or dislike a Review</li>
+          <li>Reply to a review</li>
+          <li>Delete Your reply</li>
+          <li>Reccomended movies based on users favorite movies</li>
         </ul>
       </div>
     </>

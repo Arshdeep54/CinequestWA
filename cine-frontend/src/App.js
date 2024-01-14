@@ -11,6 +11,7 @@ import ContactPage from './components/ContactPage';
 import ChangePassword from './components/ChangePassword';
 import MoviePage from './components/MoviePage';
 import VerifyEmail from './components/VerifyEmail';
+import UserActivity from './components/UserActivity';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/movies/:uid' element={<MoviePage />} />
           <Route path='/about' element={<About />} />
           <Route path='/auth/profile' element={<Userprofile />} />
+          <Route path='/auth/activity' element={<UserActivity />} />
           <Route path='/auth/login' element={<Loginpage />} />
           <Route path='/auth/signup' element={<Signuppage />} />
           <Route path='/auth/verifyemail' element={<VerifyEmail />} />

@@ -130,6 +130,11 @@ button.pReplyBtn {
 }
 @media only screen and (max-width: 767px) {
     .reviewLeft{
-        margin-left: 8px;
+        margin-left: 1px;
+        margin-right: 10px;
+    }
+    .ReviewReplyCont {
+        margin: 9px 0px;
+        padding: 15px 7px;
     }
 }

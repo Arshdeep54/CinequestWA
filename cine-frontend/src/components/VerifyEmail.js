@@ -18,8 +18,18 @@ const VerifyEmail = () => {
       },
     };
     const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
-    const response = await axios.get(url, config);
-    setCurentUserEmail(response.data.email);
+    await axios.get(url, config).then(response=>{
+
+      setCurentUserEmail(response.data.email);
+    }).catch((error) => {
+      console.error(error);
+      if (error.status == 401) {
+        console.log('Token expired or invalid. Please log in again.');
+        localStorage.removeItem('access');
+        alert('Please login again');
+        navigate('/auth/login');
+      }
+    });
   };
   useEffect(() => {
     getCurrUserEmail();

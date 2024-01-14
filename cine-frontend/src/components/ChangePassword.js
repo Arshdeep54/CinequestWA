@@ -45,12 +45,22 @@ function ChangePassword() {
         },
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/changepassword/`;
-      const response = await axios.post(url, body, config);
-      console.log(response.data);
-      if (response.status == 200) {
-        alert('Password Changed');
-        navigate('/auth/profile');
-      }
+      await axios
+        .post(url, body, config)
+        .then((response) => {
+          console.log(response.data);
+          if (response.status == 200) {
+            alert('Password Changed');
+            navigate('/auth/profile');
+          }
+        })
+        .catch((error) => {
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            navigate('/auth/login');
+          }
+        });
     }
 
     // navigate("/");
@@ -91,7 +101,7 @@ function ChangePassword() {
         <div className={'inputContainer'} style={{ position: 'relative' }}>
           <input
             value={password2}
-            type='password'
+            type={passwordhide2 ? 'password' : 'text'}
             placeholder='Confirm password'
             onChange={(ev) => setPassword2(ev.target.value)}
             className={'inputBox'}

@@ -181,7 +181,9 @@ img.img {
   }
  
   .allMovies {
-    margin: 13px;
+    margin: 13px 13px 0 13px;
+    padding-bottom: 9px;
+
 }
 
 .movie-card {
@@ -229,6 +231,15 @@ img.img {
 
 .movie-details p {
   margin: 5px 0;
+}
+.seemorebtn{
+
+  margin-top: 10px;
+  width: 100%;
+display: flex;
+justify-content: space-between;
+text-decoration: underline;
+text-decoration-color: blueviolet;
 }
 @media only screen and (max-width: 767px) {
  .homeContainer{

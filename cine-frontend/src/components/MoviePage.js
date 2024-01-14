@@ -67,22 +67,32 @@ const MoviePage = () => {
       };
       setAddToFav(true);
       const url = `${process.env.REACT_APP_API_URL}moviesapi/user-favourite-movies/`;
-      await axios.get(url, config).then((fav_movies) => {
-        console.log(fav_movies.data);
-        const isFavourite = fav_movies.data.some(
-          (movie) => parseInt(movie.movie) === parseInt(uid)
-        );
-        const fav_movie = fav_movies.data.find(
-          (movie) => parseInt(movie.movie) === parseInt(uid)
-        );
-        console.log(fav_movie);
-        if (fav_movie) {
-          setFav_id(fav_movie.id);
-        }
-        console.log(isFavourite);
-        setFavourite(isFavourite);
-        setAddToFav(false);
-      });
+      await axios
+        .get(url, config)
+        .then((fav_movies) => {
+          console.log(fav_movies.data);
+          const isFavourite = fav_movies.data.some(
+            (movie) => parseInt(movie.movie) === parseInt(uid)
+          );
+          const fav_movie = fav_movies.data.find(
+            (movie) => parseInt(movie.movie) === parseInt(uid)
+          );
+          console.log(fav_movie);
+          if (fav_movie) {
+            setFav_id(fav_movie.id);
+          }
+          console.log(isFavourite);
+          setFavourite(isFavourite);
+          setAddToFav(false);
+        })
+        .catch((error) => {
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     }
   };
   const getReviews = async () => {
@@ -152,12 +162,22 @@ const MoviePage = () => {
             Authorization: `JWT ${token}`,
           },
         };
-        await axios.post(url, review_body, config).then((res) => {
-          console.log(res);
-          getReviews();
-          review.oneliner = '';
-          review.description = '';
-        });
+        await axios
+          .post(url, review_body, config)
+          .then((res) => {
+            console.log(res);
+            getReviews();
+            review.oneliner = '';
+            review.description = '';
+          })
+          .catch((error) => {
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
+            }
+          });
       } else {
         alert('empty string');
       }
@@ -187,9 +207,20 @@ const MoviePage = () => {
         },
       };
       const url = `${process.env.REACT_APP_API_URL}auth/user/me/`;
-      const response = await axios.get(url, config);
-      console.log(response.data.profile_picture);
-      setProfilePic(response.data.profile_picture);
+      await axios
+        .get(url, config)
+        .then((response) => {
+          console.log(response.data.profile_picture);
+          setProfilePic(response.data.profile_picture);
+        })
+        .catch((error) => {
+          if (error.status == 401) {
+            console.log('Token expired or invalid. Please log in again.');
+            localStorage.removeItem('access');
+            alert('Please login again');
+            navigate('/auth/login');
+          }
+        });
     }
   };
   const handleTextareaChange = () => {
@@ -236,8 +267,14 @@ const MoviePage = () => {
               console.log('something went wrong');
             }
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            console.error(error);
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
+            }
           });
       } else {
         const body = {
@@ -256,8 +293,14 @@ const MoviePage = () => {
               setAddToFav(false);
             }
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            console.error(error);
+            if (error.status == 401) {
+              console.log('Token expired or invalid. Please log in again.');
+              localStorage.removeItem('access');
+              alert('Please login again');
+              navigate('/auth/login');
+            }
           });
       }
     } else {

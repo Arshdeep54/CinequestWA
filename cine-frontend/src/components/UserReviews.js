@@ -26,11 +26,22 @@ function UserReviews() {
   };
   const getUserReviews = async () => {
     const url = `${process.env.REACT_APP_API_URL}moviesapi/user-reviews/`;
-    const response = await axios.get(url, config);
+    await axios
+      .get(url, config)
+      .then((response) => {
+        const reviews = [...response.data];
+        setUserReviews(reviews);
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.status == 401) {
+          console.log('Token expired or invalid. Please log in again.');
+          localStorage.removeItem('access');
+          alert('Please login again');
+          navigate('/auth/login');
+        }
+      });
     // console.log(response.data[0]);
-
-    const reviews = [...response.data];
-    setUserReviews(reviews);
   };
   const getMovies = async () => {
     const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/`;
@@ -51,13 +62,24 @@ function UserReviews() {
   };
   const handleDelete = async (review) => {
     const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/`;
-    await axios.delete(url, config).then((res) => {
-      console.log(res.data, res.status);
-      if (res.status === 204) {
-        getUserReviews();
-        alert('review deleted');
-      }
-    });
+    await axios
+      .delete(url, config)
+      .then((res) => {
+        console.log(res.data, res.status);
+        if (res.status === 204) {
+          getUserReviews();
+          alert('review deleted');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.status == 401) {
+          console.log('Token expired or invalid. Please log in again.');
+          localStorage.removeItem('access');
+          alert('Please login again');
+          navigate('/auth/login');
+        }
+      });
   };
   const sendTo = (movie_id) => {
     navigate(`/movies/${movie_id}`);
@@ -83,12 +105,24 @@ function UserReviews() {
       },
     };
     const url = `${process.env.REACT_APP_API_URL}moviesapi/movies/${review.movie}/reviews/${review.id}/`;
-    const response = await axios.put(url, body, config);
-    if (response.status === 200) {
-      handleModalClose();
-    } else {
-      handleModalClose('error updating the review');
-    }
+    await axios
+      .put(url, body, config)
+      .then((response) => {
+        if (response.status === 200) {
+          handleModalClose();
+        } else {
+          handleModalClose('error updating the review');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.status == 401) {
+          console.log('Token expired or invalid. Please log in again.');
+          localStorage.removeItem('access');
+          alert('Please login again');
+          navigate('/auth/login');
+        }
+      });
   };
   const ReviewModal = ({ isOpen, onClose, review }) => {
     const [descModel, setDescModel] = useState(review.description);
@@ -117,9 +151,10 @@ function UserReviews() {
             display: isOpen ? 'block' : 'none',
             position: 'fixed',
             top: '50%',
-            left: window.matchMedia('(max-width:767px)').matches
-              ? '30%'
-              : '50%',
+            // left: window.matchMedia('(max-width:767px)').matches
+            //   ? '50%'
+            //   : '50%',
+            left: '50%',
             transform: 'translate(-50%, -50%)',
             width: window.matchMedia('(max-width:767px)').matches
               ? '51%'
