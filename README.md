@@ -20,12 +20,19 @@ Some Developer Side features to this project are :-
   - All Movies grid with pagination
   - Movie card having click to view details functionality
     
-- Movie Page
+- Profile Page
   - User Infomation(profile picture,first name,last name,gender,Dob,Mobile,About Movie life) which can be updated
   - All reviews made by the user
   - User's Favorite Movies
   - Account Settings: Log out, Change password 
-
+- Movie Page
+  - All Movie details
+  - Add to Favorite feature
+  - Add review
+  - Like or dislike a Review
+  - Reply to a review
+  - Delete Your reply 
+  - Reccomended movies based on users favorite movies
 
 ### Table of Contents
 
