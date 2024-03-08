@@ -37,7 +37,7 @@ def convertDate(date):
 
 
 def post_to_api(movie):
-    url = "https://arshdeep54.pythonanywhere.com/moviesapi/movies/"
+    url = "http://127.0.0.1:8000/moviesapi/movies/"
     res = requests.get(url)
 
     print(movie["title"])
@@ -54,7 +54,7 @@ def post_to_api(movie):
 
 def post_review(review, movie_id):
     url = (
-        f"https://arshdeep54.pythonanywhere.com/moviesapi/movies/{movie_id}/webreviews/"
+        f"http://127.0.0.1:8000/moviesapi/movies/{movie_id}/webreviews/"
     )
     res = requests.get(url)
     # print(len(list(res.json())))
@@ -396,7 +396,7 @@ def scrape_imdb():
             .find("main")
             .find(
                 "div",
-                class_="ipc-page-content-container ipc-page-content-container--center sc-9b618954-0 sqGLE",
+                class_="ipc-page-content-container ipc-page-content-container--center sc-c2d23b21-0 jUDJkt",
             )
             .find_all(
                 "div",
@@ -421,7 +421,7 @@ def scrape_imdb():
         for movie in movie_list:
             count += 1
             link = movie.div.div.div.div.find(
-                "div", class_="sc-935ed930-0 ccIaLF"
+                "div", class_="sc-be6f1408-0 gVGktK"
             ).div.a["href"]
             # link="https://www.imdb.com/title/tt12393526/"
             print(link)
