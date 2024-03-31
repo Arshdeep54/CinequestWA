@@ -1,4 +1,4 @@
-# CineQuest-IMG
+# CineQuest
 
 ## Project Overview
 
